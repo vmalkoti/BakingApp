@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@android:color/holo_orange_light"
+            android:textStyle="bold"
             android:text="Ingredients"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -34,7 +35,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintLeft_toLeftOf="@id/recipe_ingredients_header"
-            app:layout_constraintTop_toBottomOf="@id/recipe_ingredients_header" />
+            app:layout_constraintTop_toBottomOf="@id/recipe_ingredients_header"
+            tools:context=".fragments.RecipeDetailsFragment"
+            tools:listitem="@layout/ingredient_item" />
 
         <TextView
             android:id="@+id/recipe_steps_header"
@@ -42,6 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@android:color/holo_orange_light"
+            android:textStyle="bold"
             android:text="Steps"
             app:layout_constraintLeft_toLeftOf="@id/recipe_ingredients"
             app:layout_constraintTop_toBottomOf="@id/recipe_ingredients" />
