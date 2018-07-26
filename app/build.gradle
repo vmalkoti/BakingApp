@@ -8,6 +8,7 @@ ext {
     archLifecycleVersion = '1.1.1'
     retrofitVersion = '2.4.0'
     gsonVersion = '2.8.4'
+    exoplayerVersion = '2.8.2'
 }
 
 android {
@@ -46,4 +47,6 @@ dependencies {
     implementation "com.google.code.gson:gson:$gsonVersion"
     implementation "android.arch.lifecycle:extensions:$archLifecycleVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$archLifecycleVersion"
+
+    implementation "com.google.android.exoplayer:exoplayer:2.8.2"
 }
