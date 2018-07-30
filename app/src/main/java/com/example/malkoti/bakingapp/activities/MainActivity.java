@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.fragment_container, stepListFragment)
                     .addToBackStack("recipe-detail")
                     .commit();
+            // update widget with selected recipe ingredients
             updateWidget(recipe);
         });
 
