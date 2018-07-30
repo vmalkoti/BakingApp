@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Recipe class for recipes objects
+ * received in Baking App JSON response
  */
-// TODO: Implement Parcelable for Recipe, Ingredients, Steps
 public class Recipe implements Parcelable {
     private int id;
     private String name;
@@ -17,6 +17,18 @@ public class Recipe implements Parcelable {
     private List<Step> steps;
     private int servings;
     private String image;
+
+    public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Recipe>() {
+        @Override
+        public Recipe createFromParcel(Parcel source) {
+            return new Recipe(source);
+        }
+
+        @Override
+        public Recipe[] newArray(int size) {
+            return new Recipe[0];
+        }
+    };
 
     public Recipe(int id, String name, List<Ingredient> ingredients, List<Step> steps, int servings, String image) {
         this.id = id;
@@ -27,13 +39,36 @@ public class Recipe implements Parcelable {
         this.image = image;
     }
 
+    /*
+     * Constructor for Parcelable
+     */
     public Recipe(Parcel in) {
         this.id = in.readInt();
         this.name = in.readString();
-        this.ingredients = new ArrayList<Ingredient>();
+        this.ingredients = new ArrayList<>();
         in.readTypedList(this.ingredients, Ingredient.CREATOR);
+        this.steps = new ArrayList<>();
+        in.readTypedList(this.steps, Step.CREATOR);
+        this.servings = in.readInt();
+        this.image = in.readString();
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel out, int flags) {
+        out.writeInt(this.id);
+        out.writeString(this.name);
+        out.writeTypedList(this.ingredients);
+        out.writeTypedList(this.steps);
+        out.writeInt(this.servings);
+        out.writeString(this.image);
+    }
+
+    /* Getters */
     public int getId() {
         return id;
     }
@@ -58,11 +93,9 @@ public class Recipe implements Parcelable {
         return image;
     }
 
-    public void setImage(String image) {
-        this.image = image;
-    }
 
     /**
+     * Inner static class
      * Ingredients of the recipe
      */
     public static class Ingredient implements Parcelable {
@@ -70,14 +103,14 @@ public class Recipe implements Parcelable {
         private String measure;
         private String ingredient;
 
-        public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
+        public static final Parcelable.Creator CREATOR = new Parcelable.Creator<Ingredient>() {
             @Override
-            public Object createFromParcel(Parcel source) {
+            public Ingredient createFromParcel(Parcel source) {
                 return new Ingredient(source);
             }
 
             @Override
-            public Object[] newArray(int size) {
+            public Ingredient[] newArray(int size) {
                 return new Ingredient[0];
             }
         };
@@ -142,12 +175,24 @@ public class Recipe implements Parcelable {
     /**
      * Steps of the recipe
      */
-    public static class Step {
+    public static class Step implements Parcelable {
         private int id;
         private String shortDescription;
         private String description;
         private String videoURL;
         private String thumbnailURL;
+
+        public static final Creator<Step> CREATOR = new Creator<Step>() {
+            @Override
+            public Step createFromParcel(Parcel in) {
+                return new Step(in);
+            }
+
+            @Override
+            public Step[] newArray(int size) {
+                return new Step[size];
+            }
+        };
 
         public Step(int id, String shortDescription, String description, String videoURL, String thumbnailURL) {
             this.id = id;
@@ -155,6 +200,32 @@ public class Recipe implements Parcelable {
             this.description = description;
             this.videoURL = videoURL;
             this.thumbnailURL = thumbnailURL;
+        }
+
+        /*
+         * Constructor for Parcelable
+         */
+        protected Step(Parcel in) {
+            this.id = in.readInt();
+            this.shortDescription = in.readString();
+            this.description = in.readString();
+            this.videoURL = in.readString();
+            this.thumbnailURL = in.readString();
+        }
+
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeInt(id);
+            dest.writeString(shortDescription);
+            dest.writeString(description);
+            dest.writeString(videoURL);
+            dest.writeString(thumbnailURL);
         }
 
         public int getId() {
@@ -176,5 +247,7 @@ public class Recipe implements Parcelable {
         public String getThumbnailURL() {
             return thumbnailURL;
         }
+
+
     }
 }

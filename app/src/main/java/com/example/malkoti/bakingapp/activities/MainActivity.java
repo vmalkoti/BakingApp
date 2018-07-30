@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.example.malkoti.bakingapp.R;
@@ -20,7 +21,7 @@ import com.example.malkoti.bakingapp.widgets.WidgetService;
 
 
 public class MainActivity extends AppCompatActivity {
-    private static final String LOG_TAG = MainActivity.class.getSimpleName();
+    private static final String LOG_TAG = "DEBUG_" + MainActivity.class.getSimpleName();
 
     private RecipeViewModel viewModel;
     private TextView displayText;
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         if(ids!=null && ids.length>0) {
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
             context.sendBroadcast(intent);
+            Log.d(LOG_TAG, "recipe object sent in intent = " + recipe.getId());
         }
     }
 }

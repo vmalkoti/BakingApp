@@ -3,6 +3,7 @@ package com.example.malkoti.bakingapp.widgets;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
+import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
@@ -14,6 +15,7 @@ import com.example.malkoti.bakingapp.model.Recipe;
  * Service class to return an instance of RemoteViewsFactory class
  */
 public class WidgetService extends RemoteViewsService {
+    private static final String LOG_TAG = "DEBUG_" + WidgetService.class.getSimpleName();
     public static final String RECIPE_EXTRA = "recipe";
 
     @Override
@@ -31,6 +33,7 @@ public class WidgetService extends RemoteViewsService {
         public IngredientsWidgetRemoteViewsFactory(Context applicationContext, Intent intent) {
             this.context = applicationContext;
             this.recipe = intent.getParcelableExtra(WidgetService.RECIPE_EXTRA);
+            Log.d(LOG_TAG, "recipe object received in constructor =" + recipe.getId());
         }
 
         @Override
@@ -57,9 +60,10 @@ public class WidgetService extends RemoteViewsService {
 
         @Override
         public RemoteViews getViewAt(int position) {
-            if(position== AdapterView.INVALID_POSITION || recipe==null) {
+            if(position==AdapterView.INVALID_POSITION || recipe==null) {
                 return null;
             }
+
             RemoteViews remoteViews = new RemoteViews(this.context.getPackageName(),
                     R.layout.ingredient_item);
             remoteViews.setTextViewText(R.id.recipe_ingredient_item,
