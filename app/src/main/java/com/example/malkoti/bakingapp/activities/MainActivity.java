@@ -16,7 +16,7 @@ import com.example.malkoti.bakingapp.fragments.StepDetailsFragment;
 import com.example.malkoti.bakingapp.fragments.RecipeDetailsFragment;
 import com.example.malkoti.bakingapp.model.Recipe;
 import com.example.malkoti.bakingapp.widgets.IngredientsWidget;
-import com.example.malkoti.bakingapp.widgets.IngredientsWidgetRemoteViewsService;
+import com.example.malkoti.bakingapp.widgets.WidgetService;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
         }
 
-        Recipe passedRecipe = getIntent().getParcelableExtra(IngredientsWidgetRemoteViewsService.RECIPE_EXTRA);
+        Recipe passedRecipe = getIntent().getParcelableExtra(WidgetService.RECIPE_EXTRA);
         if(passedRecipe != null) {
             viewModel.setSelectedRecipe(passedRecipe);
         }
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         Context context = getApplicationContext();
         Intent intent = new Intent(context, IngredientsWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        intent.putExtra(IngredientsWidgetRemoteViewsService.RECIPE_EXTRA, recipe);
+        intent.putExtra(WidgetService.RECIPE_EXTRA, recipe);
         int[] ids = AppWidgetManager
                 .getInstance(context)
                 .getAppWidgetIds(

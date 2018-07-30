@@ -34,8 +34,8 @@ public class IngredientsWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget);
-            Intent intent = new Intent(context, IngredientsWidgetRemoteViewsService.class);
-            intent.putExtra(IngredientsWidgetRemoteViewsService.RECIPE_EXTRA, recipe);
+            Intent intent = new Intent(context, WidgetService.class);
+            intent.putExtra(WidgetService.RECIPE_EXTRA, recipe);
             views.setRemoteAdapter(R.id.recipe_ingredients_list, intent);
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
@@ -43,7 +43,7 @@ public class IngredientsWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Parcelable p = intent.getParcelableExtra(IngredientsWidgetRemoteViewsService.RECIPE_EXTRA);
+        Parcelable p = intent.getParcelableExtra(WidgetService.RECIPE_EXTRA);
         if(p!=null) {
             this.recipe = (Recipe) p;
         }
