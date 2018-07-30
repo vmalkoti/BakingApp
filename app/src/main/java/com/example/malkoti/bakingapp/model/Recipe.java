@@ -3,12 +3,14 @@ package com.example.malkoti.bakingapp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  *
  */
-public class Recipe {
+// TODO: Implement Parcelable for Recipe, Ingredients, Steps
+public class Recipe implements Parcelable {
     private int id;
     private String name;
     private List<Ingredient> ingredients;
@@ -23,6 +25,13 @@ public class Recipe {
         this.steps = steps;
         this.servings = servings;
         this.image = image;
+    }
+
+    public Recipe(Parcel in) {
+        this.id = in.readInt();
+        this.name = in.readString();
+        this.ingredients = new ArrayList<Ingredient>();
+        in.readTypedList(this.ingredients, Ingredient.CREATOR);
     }
 
     public int getId() {

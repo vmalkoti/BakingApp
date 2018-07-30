@@ -30,6 +30,11 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/ingredients_widget_info" />
         </receiver>
+
+        <service android:name=".widgets.IngredientsWidgetRemoteViewsService"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+
     </application>
 
 </manifest>
