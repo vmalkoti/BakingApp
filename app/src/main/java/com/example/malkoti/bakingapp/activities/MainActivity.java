@@ -85,10 +85,11 @@ public class MainActivity extends AppCompatActivity {
                 .getAppWidgetIds(
                         new ComponentName(context, IngredientsWidget.class)
                 );
+        Log.d(LOG_TAG, "recipe object sent in intent = " + recipe.getName());
         if(ids!=null && ids.length>0) {
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
             context.sendBroadcast(intent);
-            Log.d(LOG_TAG, "recipe object sent in intent = " + recipe.getId());
+            Log.d(LOG_TAG, "Broadcast sent");
         }
     }
 }

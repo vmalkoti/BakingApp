@@ -40,7 +40,7 @@ public class IngredientsWidget extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             Intent intent = new Intent(context, WidgetService.class);
             if(recipe!=null) {
-                Log.d(LOG_TAG, "recipe object in onUpdate = " + recipe.getId());
+                Log.d(LOG_TAG, "recipe object in onUpdate = " + recipe.getName());
             } else {
                 Log.d(LOG_TAG, "no recipe object in onUpdate");
             }
@@ -50,9 +50,10 @@ public class IngredientsWidget extends AppWidgetProvider {
 
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget);
             views.setRemoteAdapter(R.id.recipe_ingredients_list, intent);
-
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.recipe_ingredients_list);
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
@@ -61,6 +62,8 @@ public class IngredientsWidget extends AppWidgetProvider {
         if(p!=null) {
             this.recipe = (Recipe) p;
             Log.d(LOG_TAG, "recipe object in onReceive = " + recipe.getName());
+        } else {
+            Log.d(LOG_TAG, "no recipe object in onReceive");
         }
         super.onReceive(context, intent);
     }
