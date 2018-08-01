@@ -1,5 +1,6 @@
 package com.example.malkoti.bakingapp.widgets;
 
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.malkoti.bakingapp.R;
+import com.example.malkoti.bakingapp.activities.MainActivity;
 import com.example.malkoti.bakingapp.model.Recipe;
 
 /**
@@ -38,19 +40,30 @@ public class IngredientsWidget extends AppWidgetProvider {
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
-            Intent intent = new Intent(context, WidgetService.class);
+            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget);
+            int id = 0;
             if(recipe!=null) {
                 Log.d(LOG_TAG, "recipe object in onUpdate = " + recipe.getName());
+                views.setTextViewText(R.id.appwidget_recipe_name, recipe.getName());
+                id = recipe.getId();
             } else {
                 Log.d(LOG_TAG, "no recipe object in onUpdate");
             }
-            intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            intent.putExtra(WidgetService.RECIPE_EXTRA, recipe);
-            intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
 
-            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget);
-            views.setRemoteAdapter(R.id.recipe_ingredients_list, intent);
+            Intent serviceIntent = new Intent(context, RecipeWidgetService.class);
+            serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+            serviceIntent.putExtra(RecipeWidgetService.RECIPE_EXTRA, recipe);
+            //serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
+            serviceIntent.setData(Uri.parse(String.valueOf(id)));
+            views.setRemoteAdapter(R.id.recipe_ingredients_list, serviceIntent);
+
+            Intent clickIntent = new Intent(context, MainActivity.class);
+            PendingIntent appPendingIntent = PendingIntent.getActivity(context,
+                    0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            views.setPendingIntentTemplate(R.id.recipe_ingredients_list, appPendingIntent);
+
             appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.recipe_ingredients_list);
+            appWidgetManager.updateAppWidget(appWidgetId, null);
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
         super.onUpdate(context, appWidgetManager, appWidgetIds);
@@ -58,7 +71,7 @@ public class IngredientsWidget extends AppWidgetProvider {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Parcelable p = intent.getParcelableExtra(WidgetService.RECIPE_EXTRA);
+        Parcelable p = intent.getParcelableExtra(RecipeWidgetService.RECIPE_EXTRA);
         if(p!=null) {
             this.recipe = (Recipe) p;
             Log.d(LOG_TAG, "recipe object in onReceive = " + recipe.getName());
