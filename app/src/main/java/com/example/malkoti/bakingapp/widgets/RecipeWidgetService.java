@@ -12,6 +12,7 @@ import android.widget.RemoteViewsService;
 
 import com.example.malkoti.bakingapp.R;
 import com.example.malkoti.bakingapp.model.Recipe;
+import com.example.malkoti.bakingapp.utils.PreferencesUtil;
 
 /**
  * Service class to return an instance of RemoteViewsFactory class
@@ -33,17 +34,6 @@ public class RecipeWidgetService extends RemoteViewsService {
         return new IngredientsWidgetRemoteViewsFactory(this.getApplicationContext(), intent);
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        Parcelable p = intent.getParcelableExtra(RecipeWidgetService.RECIPE_EXTRA);
-        if(p!=null) {
-            Recipe recipe = (Recipe) p;
-            Log.d(LOG_TAG, "recipe object in onBind = " + recipe.getName());
-        } else {
-            Log.d(LOG_TAG, "no recipe object in onBind");
-        }
-        return super.onBind(intent);
-    }
 
     /**
      * Adapter class for widget's ListView
@@ -74,6 +64,7 @@ public class RecipeWidgetService extends RemoteViewsService {
             final long identityToken = Binder.clearCallingIdentity();
             Log.d(LOG_TAG, "Factory dataset changed");
             // get/set new data here
+            this.recipe = PreferencesUtil.getPreferences(context);
             Binder.restoreCallingIdentity(identityToken);
         }
 
@@ -96,9 +87,10 @@ public class RecipeWidgetService extends RemoteViewsService {
             }
 
             RemoteViews remoteViews = new RemoteViews(this.context.getPackageName(),
-                    R.layout.ingredient_item);
-            remoteViews.setTextViewText(R.id.recipe_ingredient_item,
+                    android.R.layout.simple_list_item_1);
+            remoteViews.setTextViewText(android.R.id.text1,
                     recipe.getIngredients().get(position).toString());
+
             return remoteViews;
         }
 

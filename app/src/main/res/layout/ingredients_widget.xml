@@ -1,6 +1,10 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:padding="@dimen/widget_margin">
 
     <TextView
@@ -24,4 +28,4 @@
         android:layout_below="@id/appwidget_recipe_name"
         android:layout_alignParentLeft="true" />
 
-</RelativeLayout>
+</LinearLayout>

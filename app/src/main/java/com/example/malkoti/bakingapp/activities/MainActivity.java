@@ -16,6 +16,7 @@ import com.example.malkoti.bakingapp.fragments.RecipeListFragment;
 import com.example.malkoti.bakingapp.fragments.StepDetailsFragment;
 import com.example.malkoti.bakingapp.fragments.RecipeDetailsFragment;
 import com.example.malkoti.bakingapp.model.Recipe;
+import com.example.malkoti.bakingapp.utils.PreferencesUtil;
 import com.example.malkoti.bakingapp.widgets.IngredientsWidget;
 import com.example.malkoti.bakingapp.widgets.RecipeWidgetService;
 
@@ -91,5 +92,7 @@ public class MainActivity extends AppCompatActivity {
             context.sendBroadcast(intent);
             Log.d(LOG_TAG, "Broadcast sent");
         }
+
+        PreferencesUtil.savePreferences(context, recipe);
     }
 }
