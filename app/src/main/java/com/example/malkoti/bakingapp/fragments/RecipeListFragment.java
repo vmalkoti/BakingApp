@@ -1,10 +1,8 @@
 package com.example.malkoti.bakingapp.fragments;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,12 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.malkoti.bakingapp.R;
-import com.example.malkoti.bakingapp.activities.MainActivity;
 import com.example.malkoti.bakingapp.adapters.RecipesAdapter;
 import com.example.malkoti.bakingapp.data.RecipeViewModel;
-import com.example.malkoti.bakingapp.model.Recipe;
-
-import java.util.List;
 
 
 /**
@@ -32,7 +26,7 @@ public class RecipeListFragment extends Fragment {
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
     // TODO: Customize parameters
-    private int mColumnCount = 2;
+    private int gridColumnCount = 2;
     private RecipesAdapter.OnRecipeItemClickListener mListener;
 
     private RecipeViewModel recipeViewModel;
@@ -43,13 +37,12 @@ public class RecipeListFragment extends Fragment {
      */
     public RecipeListFragment() { }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
-    public static RecipeListFragment newInstance(int columnCount) {
+    public static RecipeListFragment newInstance() {
         RecipeListFragment fragment = new RecipeListFragment();
-        Bundle args = new Bundle();
-        args.putInt(ARG_COLUMN_COUNT, columnCount);
-        fragment.setArguments(args);
+        //Bundle args = new Bundle();
+        //args.putInt(ARG_COLUMN_COUNT, columnCount);
+        //fragment.setArguments(args);
         return fragment;
     }
 
@@ -57,10 +50,11 @@ public class RecipeListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        /*
         if (getArguments() != null) {
-            mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
+            gridColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
-
+        */
     }
 
     @Override
@@ -73,13 +67,15 @@ public class RecipeListFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             RecyclerView.LayoutManager layoutManager;
-            Log.d(LOG_TAG, "Number of columns " + mColumnCount);
-            if (mColumnCount <= 1) {
+            Log.d(LOG_TAG, "Number of columns " + gridColumnCount);
+
+            gridColumnCount = getResources().getInteger(R.integer.gridColumns);
+            if (gridColumnCount <= 1) {
                 //recyclerView.setLayoutManager(new LinearLayoutManager(context));
                 layoutManager = new LinearLayoutManager(context);
             } else {
-                //recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-                layoutManager = new GridLayoutManager(context, mColumnCount);
+                //recyclerView.setLayoutManager(new GridLayoutManager(context, gridColumnCount));
+                layoutManager = new GridLayoutManager(context, gridColumnCount);
             }
             recyclerView.setLayoutManager(layoutManager);
             RecipesAdapter adapter = new RecipesAdapter(mListener);

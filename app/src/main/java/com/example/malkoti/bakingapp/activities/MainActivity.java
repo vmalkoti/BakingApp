@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "DEBUG_" + MainActivity.class.getSimpleName();
 
     private RecipeViewModel viewModel;
-    private TextView displayText;
+    private int numGridColumns = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         if(findViewById(R.id.fragment_container) != null) {
             if(savedInstanceState!=null) return;
 
-            RecipeListFragment recipeListFragment = RecipeListFragment.newInstance(1);
+            RecipeListFragment recipeListFragment = RecipeListFragment.newInstance();
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.fragment_container, recipeListFragment)
