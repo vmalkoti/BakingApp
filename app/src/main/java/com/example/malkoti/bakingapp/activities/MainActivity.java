@@ -47,13 +47,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         viewModel.getSelectedStep().observe(MainActivity.this, step -> {
-            // load step details fragment
-            StepDetailsFragment stepDetailsFragment = StepDetailsFragment.newInstance();
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, stepDetailsFragment)
-                    .addToBackStack("step_details")
-                    .commit();
+            boolean isTwoPaneLayout = getResources().getBoolean(R.bool.twoPaneLayout);
+
+            if(!isTwoPaneLayout) {
+                // load step details fragment
+                StepDetailsFragment stepDetailsFragment = StepDetailsFragment.newInstance();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, stepDetailsFragment)
+                        .addToBackStack("step_details")
+                        .commit();
+            }
+
+            Log.d(LOG_TAG, "Selected step " + step.getId());
         });
 
         if(findViewById(R.id.fragment_container) != null) {

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import com.example.malkoti.bakingapp.R;
 import com.example.malkoti.bakingapp.adapters.StepsAdapter;
 import com.example.malkoti.bakingapp.data.RecipeViewModel;
+import com.example.malkoti.bakingapp.model.Recipe;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayerFactory;
@@ -33,7 +35,7 @@ import com.google.android.exoplayer2.util.Util;
  * to show details of the selected Step object
  */
 public class StepDetailsFragment extends Fragment {
-    private static final String LOG_TAG = StepDetailsFragment.class.getSimpleName();
+    private static final String LOG_TAG = "DEBUG_" + StepDetailsFragment.class.getSimpleName();
 
     private RecipeViewModel recipeViewModel;
 
@@ -66,7 +68,7 @@ public class StepDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_step_details, container, false);
 
-        //TextView stepVideo = view.findViewById(R.id.step_video_url);
+        TextView stepVideo = view.findViewById(R.id.step_video_url);
         TextView stepDesc = view.findViewById(R.id.step_description);
 
         //https://codelabs.developers.google.com/codelabs/exoplayer-intro/#2
@@ -74,10 +76,14 @@ public class StepDetailsFragment extends Fragment {
 
         recipeViewModel = ViewModelProviders.of(getActivity()).get(RecipeViewModel.class);
         recipeViewModel.getSelectedStep().observe(StepDetailsFragment.this, step -> {
-            //stepVideo.setText(step.getVideoURL());
+            Log.d(LOG_TAG, "Loaded new step " + step.getId());
+            stepVideo.setText(step.getVideoURL());
             stepDesc.setText(step.getDescription());
             if(step.getVideoURL()==null || step.getVideoURL().trim().equals("")) {
                 playerView.setVisibility(View.GONE);
+            } else {
+                initializePlayer();
+                Log.d(LOG_TAG, "Video  " + step.getVideoURL());
             }
         });
         return view;
@@ -126,6 +132,10 @@ public class StepDetailsFragment extends Fragment {
      * with video URL from viewmodel
      */
     private void initializePlayer() {
+        Recipe.Step selectedStep = recipeViewModel.getSelectedStep().getValue();
+
+        if(selectedStep==null) return;
+
         String videoUrl = recipeViewModel.getSelectedStep().getValue().getVideoURL();
 
         if(videoUrl != null && !videoUrl.trim().equals("")) {

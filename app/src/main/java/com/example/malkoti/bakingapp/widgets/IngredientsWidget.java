@@ -13,6 +13,7 @@ import android.widget.RemoteViews;
 import com.example.malkoti.bakingapp.R;
 import com.example.malkoti.bakingapp.activities.MainActivity;
 import com.example.malkoti.bakingapp.model.Recipe;
+import com.example.malkoti.bakingapp.utils.PreferencesUtil;
 
 /**
  * Implementation of App Widget functionality.
@@ -42,10 +43,11 @@ public class IngredientsWidget extends AppWidgetProvider {
         for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget);
             int id = 0;
-            if(recipe!=null) {
-                Log.d(LOG_TAG, "recipe object in onUpdate = " + recipe.getName());
-                views.setTextViewText(R.id.appwidget_recipe_name, recipe.getName());
-                id = recipe.getId();
+
+            Recipe savedRecipe = PreferencesUtil.getPreferences(context);
+            if(savedRecipe!=null) {
+                Log.d(LOG_TAG, "recipe object in onUpdate = " + savedRecipe.getName());
+                views.setTextViewText(R.id.appwidget_recipe_name, savedRecipe.getName());
             } else {
                 Log.d(LOG_TAG, "no recipe object in onUpdate");
             }
@@ -54,7 +56,6 @@ public class IngredientsWidget extends AppWidgetProvider {
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             serviceIntent.putExtra(RecipeWidgetService.RECIPE_EXTRA, recipe);
             //serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
-            serviceIntent.setData(Uri.parse(String.valueOf(id)));
             views.setRemoteAdapter(R.id.recipe_ingredients_list, serviceIntent);
 
             Intent clickIntent = new Intent(context, MainActivity.class);
