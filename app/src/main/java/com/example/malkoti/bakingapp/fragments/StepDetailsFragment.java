@@ -33,6 +33,9 @@ import com.google.android.exoplayer2.util.Util;
 /**
  * Fragment class
  * to show details of the selected Step object
+ *
+ * Referred to Google codelabs example for ExoPlayer:
+ * https://codelabs.developers.google.com/codelabs/exoplayer-intro/#2
  */
 public class StepDetailsFragment extends Fragment {
     private static final String LOG_TAG = "DEBUG_" + StepDetailsFragment.class.getSimpleName();
@@ -51,7 +54,6 @@ public class StepDetailsFragment extends Fragment {
      */
     public StepDetailsFragment() { }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static StepDetailsFragment newInstance() {
         StepDetailsFragment fragment = new StepDetailsFragment();
@@ -79,9 +81,11 @@ public class StepDetailsFragment extends Fragment {
             Log.d(LOG_TAG, "Loaded new step " + step.getId());
             stepVideo.setText(step.getVideoURL());
             stepDesc.setText(step.getDescription());
+            releasePlayer();
             if(step.getVideoURL()==null || step.getVideoURL().trim().equals("")) {
                 playerView.setVisibility(View.GONE);
             } else {
+                playerView.setVisibility(View.VISIBLE);
                 initializePlayer();
                 Log.d(LOG_TAG, "Video  " + step.getVideoURL());
             }
@@ -138,7 +142,7 @@ public class StepDetailsFragment extends Fragment {
 
         String videoUrl = recipeViewModel.getSelectedStep().getValue().getVideoURL();
 
-        if(videoUrl != null && !videoUrl.trim().equals("")) {
+        if(videoUrl != null && !videoUrl.trim().isEmpty()) {
             player = ExoPlayerFactory.newSimpleInstance(
                 new DefaultRenderersFactory(getContext()),
                 new DefaultTrackSelector(),
