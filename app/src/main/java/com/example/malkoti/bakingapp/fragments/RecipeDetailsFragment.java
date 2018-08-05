@@ -3,10 +3,12 @@ package com.example.malkoti.bakingapp.fragments;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +23,20 @@ import com.example.malkoti.bakingapp.data.RecipeViewModel;
 import com.example.malkoti.bakingapp.model.Recipe;
 
 
+/*
+ * TODO: Use DataBinding to get views
+ */
 /**
  * Fragment class
  * to show details of the selected Recipe object
  */
 public class RecipeDetailsFragment extends Fragment {
-    private static final String LOG_TAG = RecipeDetailsFragment.class.getSimpleName();
+    private static final String LOG_TAG = "DEBUG_" + RecipeDetailsFragment.class.getSimpleName();
 
+    private RecyclerView recipeIngredientsRecyclerView;
+    private  RecyclerView recipeStepsRecyclerView;
+    private IngredientsAdapter ingredientsAdapter;
+    private StepsAdapter stepsAdapter;
     private StepsAdapter.OnStepItemClickListener mListener;
     private RecipeViewModel recipeViewModel;
 
@@ -37,7 +46,6 @@ public class RecipeDetailsFragment extends Fragment {
      */
     public RecipeDetailsFragment() { }
 
-    // TODO: Customize parameter initialization
     @SuppressWarnings("unused")
     public static RecipeDetailsFragment newInstance() {
         RecipeDetailsFragment fragment = new RecipeDetailsFragment();
@@ -57,37 +65,43 @@ public class RecipeDetailsFragment extends Fragment {
         Context context = view.getContext();
 
         // Ingredients RecyclerView
-        RecyclerView recipeIngredientsRecyclerView = view.findViewById(R.id.recipe_ingredients);
+        recipeIngredientsRecyclerView = view.findViewById(R.id.recipe_ingredients);
         LayoutManager recipeIngredientsLayoutManager = new LinearLayoutManager(context);
         recipeIngredientsRecyclerView.setLayoutManager(recipeIngredientsLayoutManager);
-        IngredientsAdapter ingredientsAdapter = new IngredientsAdapter();
+        ingredientsAdapter = new IngredientsAdapter();
         recipeIngredientsRecyclerView.setAdapter(ingredientsAdapter);
 
         // Steps RecyclerView
-        RecyclerView recipeStepsRecyclerView = view.findViewById(R.id.recipe_steps);
+        recipeStepsRecyclerView = view.findViewById(R.id.recipe_steps);
         LayoutManager recipeStepsLayoutManager = new LinearLayoutManager(context);
         recipeStepsRecyclerView.setLayoutManager(recipeStepsLayoutManager);
-        StepsAdapter stepsAdapter = new StepsAdapter(mListener);
+        stepsAdapter = new StepsAdapter(mListener);
         recipeStepsRecyclerView.setAdapter(stepsAdapter);
-
-        /*
-        ListView recipeIngredients = view.findViewById(R.id.recipe_ingredients);
-        */
 
         recipeViewModel = ViewModelProviders.of(getActivity()).get(RecipeViewModel.class);
         recipeViewModel.getSelectedRecipe().observe(RecipeDetailsFragment.this, recipe -> {
-            stepsAdapter.setData(recipe.getSteps());
-            /*
-            ArrayAdapter<Recipe.Ingredient> ingredientsAdapter =
-                    new ArrayAdapter<>(context,
-                        android.R.layout.simple_list_item_1, recipe.getIngredients());
-            recipeIngredients.setAdapter(ingredientsAdapter);
-            */
-            ingredientsAdapter.setData(recipe.getIngredients());
+            loadRecipeDetails(recipe);
         });
+
+
         return view;
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setRetainInstance(true);
+        // when fragment is recreated after a config change
+        // observer doesn't fire onChanged because data hasn't changed
+        // so check and load details here
+        Recipe selectedRecipe = recipeViewModel.getSelectedRecipe().getValue();
+        if(selectedRecipe != null) {
+            Log.d(LOG_TAG, "Loading recipe details in onActivityCreated");
+            loadRecipeDetails(selectedRecipe);
+        } else {
+            Log.d(LOG_TAG, "No recipe object yet available in in onActivityCreated");
+        }
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -97,6 +111,11 @@ public class RecipeDetailsFragment extends Fragment {
             recipeViewModel.setSelectedStep(step);
         };
 
+    }
+
+    private void loadRecipeDetails(Recipe recipe) {
+        ingredientsAdapter.setData(recipe.getIngredients());
+        stepsAdapter.setData(recipe.getSteps());
     }
 
 }

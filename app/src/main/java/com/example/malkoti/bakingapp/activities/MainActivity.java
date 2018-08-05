@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         viewModel = ViewModelProviders.of(MainActivity.this).get(RecipeViewModel.class);
 
         viewModel.getSelectedRecipe().observe(MainActivity.this, recipe -> {
+            if(savedInstanceState!=null) return;
+
             RecipeDetailsFragment stepListFragment = RecipeDetailsFragment.newInstance();
             getSupportFragmentManager()
                     .beginTransaction()
@@ -47,8 +49,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         viewModel.getSelectedStep().observe(MainActivity.this, step -> {
-            boolean isTwoPaneLayout = getResources().getBoolean(R.bool.twoPaneLayout);
+            if(savedInstanceState!=null) return;
 
+            boolean isTwoPaneLayout = getResources().getBoolean(R.bool.twoPaneLayout);
             if(!isTwoPaneLayout) {
                 // load step details fragment
                 StepDetailsFragment stepDetailsFragment = StepDetailsFragment.newInstance();
@@ -58,8 +61,6 @@ public class MainActivity extends AppCompatActivity {
                         .addToBackStack("step_details")
                         .commit();
             }
-
-            Log.d(LOG_TAG, "Selected step " + step.getId());
         });
 
         if(findViewById(R.id.fragment_container) != null) {
@@ -93,11 +94,11 @@ public class MainActivity extends AppCompatActivity {
                 .getAppWidgetIds(
                         new ComponentName(context, IngredientsWidget.class)
                 );
-        Log.d(LOG_TAG, "recipe object sent in intent = " + recipe.getName());
+        //Log.d(LOG_TAG, "recipe object sent in intent = " + recipe.getName());
         if(ids!=null && ids.length>0) {
             intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
             context.sendBroadcast(intent);
-            Log.d(LOG_TAG, "Broadcast sent");
+            //Log.d(LOG_TAG, "Broadcast sent");
         }
 
         PreferencesUtil.savePreferences(context, recipe);

@@ -23,10 +23,8 @@ import com.example.malkoti.bakingapp.data.RecipeViewModel;
 public class RecipeListFragment extends Fragment {
     private static final String LOG_TAG = RecipeListFragment.class.getSimpleName();
 
-    // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
-    // TODO: Customize parameters
-    private int gridColumnCount = 2;
+    private int gridColumnCount;
     private RecipesAdapter.OnRecipeItemClickListener mListener;
 
     private RecipeViewModel recipeViewModel;
@@ -62,7 +60,6 @@ public class RecipeListFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_recipe_list, container, false);
 
-        // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
@@ -71,10 +68,8 @@ public class RecipeListFragment extends Fragment {
 
             gridColumnCount = getResources().getInteger(R.integer.gridColumns);
             if (gridColumnCount <= 1) {
-                //recyclerView.setLayoutManager(new LinearLayoutManager(context));
                 layoutManager = new LinearLayoutManager(context);
             } else {
-                //recyclerView.setLayoutManager(new GridLayoutManager(context, gridColumnCount));
                 layoutManager = new GridLayoutManager(context, gridColumnCount);
             }
             recyclerView.setLayoutManager(layoutManager);
@@ -82,9 +77,7 @@ public class RecipeListFragment extends Fragment {
             recyclerView.setAdapter(adapter);
 
             recipeViewModel = ViewModelProviders.of(getActivity()).get(RecipeViewModel.class);
-            recipeViewModel.getAllRecipes().observe(RecipeListFragment.this, recipes -> {
-                adapter.setData(recipes);
-            });
+            recipeViewModel.getAllRecipes().observe(RecipeListFragment.this, recipes -> adapter.setData(recipes));
         }
         return view;
     }
