@@ -129,7 +129,6 @@ public class StepDetailsFragment extends Fragment {
     public void onPause() {
         super.onPause();
         if(Util.SDK_INT <=23) {
-            playbackPosition = player.getCurrentPosition();
             releasePlayer();
             Log.d(LOG_TAG, "Called onPause");
         }
@@ -139,7 +138,6 @@ public class StepDetailsFragment extends Fragment {
     public void onStop() {
         super.onStop();
         if(Util.SDK_INT > 23) {
-            playbackPosition = player.getCurrentPosition();
             releasePlayer();
             Log.d(LOG_TAG, "Called onStop");
         }
@@ -197,9 +195,9 @@ public class StepDetailsFragment extends Fragment {
      */
     private void releasePlayer() {
         if(player != null) {
-            //playbackPosition = player.getCurrentPosition();
-            //currentWindow = player.getCurrentWindowIndex();
-            //playWhenReady = player.getPlayWhenReady();
+            playbackPosition = player.getCurrentPosition();
+            currentWindow = player.getCurrentWindowIndex();
+            playWhenReady = player.getPlayWhenReady();
             player.release();
             player = null;
         }

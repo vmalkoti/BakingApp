@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,13 +43,23 @@ public class MainActivity extends AppCompatActivity {
         viewModel.getSelectedRecipe().observe(MainActivity.this, recipe -> {
             //if(savedInstanceState!=null) return;
 
-            RecipeDetailsFragment stepListFragment = RecipeDetailsFragment.newInstance();
-            fragment = stepListFragment;
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.fragment_container, stepListFragment)
-                    .addToBackStack("recipe-detail")
-                    .commit();
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            Fragment existingFragment = getSupportFragmentManager().findFragmentByTag("recipe-details");
+
+            if(existingFragment==null) {
+                RecipeDetailsFragment stepListFragment = RecipeDetailsFragment.newInstance();
+                fragment = stepListFragment;
+                transaction
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack("recipe-detail")
+                        .commit();
+            } else {
+                fragment = existingFragment;
+                transaction
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+            }
+
             // update widget with selected recipe ingredients
             updateWidget(recipe);
         });
@@ -58,14 +69,23 @@ public class MainActivity extends AppCompatActivity {
 
             boolean isTwoPaneLayout = getResources().getBoolean(R.bool.twoPaneLayout);
             if(!isTwoPaneLayout) {
-                // load step details fragment
-                StepDetailsFragment stepDetailsFragment = StepDetailsFragment.newInstance();
-                fragment = stepDetailsFragment;
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .replace(R.id.fragment_container, stepDetailsFragment)
-                        .addToBackStack("step_details")
-                        .commit();
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                Fragment existingFragment = getSupportFragmentManager().findFragmentByTag("step-details");
+
+                if(existingFragment==null) {
+                    StepDetailsFragment stepDetailsFragment = StepDetailsFragment.newInstance();
+                    fragment = stepDetailsFragment;
+                    transaction
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack("step-details")
+                            .commit();
+                } else {
+                    fragment = existingFragment;
+                    transaction
+                            .replace(R.id.fragment_container, fragment)
+                            .commit();
+                }
+
             }
         });
 
@@ -90,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
-            getSupportFragmentManager().popBackStackImmediate();
+            getSupportFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
         }
