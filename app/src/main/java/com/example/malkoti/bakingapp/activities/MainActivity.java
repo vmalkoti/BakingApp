@@ -6,6 +6,8 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     private RecipeViewModel viewModel;
     private int numGridColumns = 1;
 
+    Fragment fragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,9 +40,10 @@ public class MainActivity extends AppCompatActivity {
         viewModel = ViewModelProviders.of(MainActivity.this).get(RecipeViewModel.class);
 
         viewModel.getSelectedRecipe().observe(MainActivity.this, recipe -> {
-            if(savedInstanceState!=null) return;
+            //if(savedInstanceState!=null) return;
 
             RecipeDetailsFragment stepListFragment = RecipeDetailsFragment.newInstance();
+            fragment = stepListFragment;
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container, stepListFragment)
@@ -49,12 +54,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         viewModel.getSelectedStep().observe(MainActivity.this, step -> {
-            if(savedInstanceState!=null) return;
+            //if(savedInstanceState!=null) return;
 
             boolean isTwoPaneLayout = getResources().getBoolean(R.bool.twoPaneLayout);
             if(!isTwoPaneLayout) {
                 // load step details fragment
                 StepDetailsFragment stepDetailsFragment = StepDetailsFragment.newInstance();
+                fragment = stepDetailsFragment;
                 getSupportFragmentManager()
                         .beginTransaction()
                         .replace(R.id.fragment_container, stepDetailsFragment)
@@ -67,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             if(savedInstanceState!=null) return;
 
             RecipeListFragment recipeListFragment = RecipeListFragment.newInstance();
+            fragment = recipeListFragment;
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.fragment_container, recipeListFragment)
@@ -78,6 +85,16 @@ public class MainActivity extends AppCompatActivity {
             viewModel.setSelectedRecipe(passedRecipe);
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStackImmediate();
+        } else {
+            super.onBackPressed();
+        }
+        getSupportFragmentManager().beginTransaction().remove(fragment).commit();
     }
 
     /**

@@ -87,6 +87,7 @@ public class RecipeListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         mListener = (recipe) -> {
+            Log.d(LOG_TAG, "Clicked on recipe " + recipe.getName());
             recipeViewModel.setSelectedRecipe(recipe);
         };
 

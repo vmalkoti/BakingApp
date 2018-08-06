@@ -96,10 +96,10 @@ public class RecipeDetailsFragment extends Fragment {
         // so check and load details here
         Recipe selectedRecipe = recipeViewModel.getSelectedRecipe().getValue();
         if(selectedRecipe != null) {
-            Log.d(LOG_TAG, "Loading recipe details in onActivityCreated");
+            //Log.d(LOG_TAG, "Loading recipe details in onActivityCreated");
             loadRecipeDetails(selectedRecipe);
         } else {
-            Log.d(LOG_TAG, "No recipe object yet available in in onActivityCreated");
+            //Log.d(LOG_TAG, "No recipe object yet available in in onActivityCreated");
         }
     }
 
