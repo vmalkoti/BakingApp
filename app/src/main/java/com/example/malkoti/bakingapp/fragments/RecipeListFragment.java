@@ -25,9 +25,10 @@ public class RecipeListFragment extends Fragment {
 
     private static final String ARG_COLUMN_COUNT = "column-count";
     private int gridColumnCount;
-    private RecipesAdapter.OnRecipeItemClickListener mListener;
+    private RecipesAdapter.OnRecipeItemClickListener adapterItemListener;
 
     private RecipeViewModel recipeViewModel;
+    private OnFragmentItemClickListener fragmentClickListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -36,23 +37,15 @@ public class RecipeListFragment extends Fragment {
     public RecipeListFragment() { }
 
     @SuppressWarnings("unused")
-    public static RecipeListFragment newInstance() {
+    public static RecipeListFragment newInstance(OnFragmentItemClickListener listener) {
         RecipeListFragment fragment = new RecipeListFragment();
-        //Bundle args = new Bundle();
-        //args.putInt(ARG_COLUMN_COUNT, columnCount);
-        //fragment.setArguments(args);
+        fragment.fragmentClickListener = listener;
         return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        /*
-        if (getArguments() != null) {
-            gridColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
-        }
-        */
     }
 
     @Override
@@ -73,7 +66,7 @@ public class RecipeListFragment extends Fragment {
                 layoutManager = new GridLayoutManager(context, gridColumnCount);
             }
             recyclerView.setLayoutManager(layoutManager);
-            RecipesAdapter adapter = new RecipesAdapter(mListener);
+            RecipesAdapter adapter = new RecipesAdapter(adapterItemListener);
             recyclerView.setAdapter(adapter);
 
             recipeViewModel = ViewModelProviders.of(getActivity()).get(RecipeViewModel.class);
@@ -86,9 +79,10 @@ public class RecipeListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mListener = (recipe) -> {
+        adapterItemListener = (recipe) -> {
             Log.d(LOG_TAG, "Clicked on recipe " + recipe.getName());
             recipeViewModel.setSelectedRecipe(recipe);
+            fragmentClickListener.onClick();
         };
 
     }

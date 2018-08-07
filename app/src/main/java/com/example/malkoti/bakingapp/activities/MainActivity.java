@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.malkoti.bakingapp.R;
 import com.example.malkoti.bakingapp.data.RecipeViewModel;
+import com.example.malkoti.bakingapp.fragments.OnFragmentItemClickListener;
 import com.example.malkoti.bakingapp.fragments.RecipeListFragment;
 import com.example.malkoti.bakingapp.fragments.StepDetailsFragment;
 import com.example.malkoti.bakingapp.fragments.RecipeDetailsFragment;
@@ -29,8 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG = "DEBUG_" + MainActivity.class.getSimpleName();
 
     private RecipeViewModel viewModel;
-    private int numGridColumns = 1;
-
     Fragment fragment;
 
     @Override
@@ -40,38 +39,13 @@ public class MainActivity extends AppCompatActivity {
 
         viewModel = ViewModelProviders.of(MainActivity.this).get(RecipeViewModel.class);
 
-        viewModel.getSelectedRecipe().observe(MainActivity.this, recipe -> {
-            //if(savedInstanceState!=null) return;
-
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            Fragment existingFragment = getSupportFragmentManager().findFragmentByTag("recipe-details");
-
-            if(existingFragment==null) {
-                RecipeDetailsFragment stepListFragment = RecipeDetailsFragment.newInstance();
-                fragment = stepListFragment;
-                transaction
-                        .replace(R.id.fragment_container, fragment)
-                        .addToBackStack("recipe-detail")
-                        .commit();
-            } else {
-                fragment = existingFragment;
-                transaction
-                        .replace(R.id.fragment_container, fragment)
-                        .commit();
-            }
-
-            // update widget with selected recipe ingredients
-            updateWidget(recipe);
-        });
-
-        viewModel.getSelectedStep().observe(MainActivity.this, step -> {
-            //if(savedInstanceState!=null) return;
-
+        OnFragmentItemClickListener stepListener = () -> {
             boolean isTwoPaneLayout = getResources().getBoolean(R.bool.twoPaneLayout);
             if(!isTwoPaneLayout) {
                 FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                 Fragment existingFragment = getSupportFragmentManager().findFragmentByTag("step-details");
 
+                Log.d(LOG_TAG, "Loading step details fragment");
                 if(existingFragment==null) {
                     StepDetailsFragment stepDetailsFragment = StepDetailsFragment.newInstance();
                     fragment = stepDetailsFragment;
@@ -79,20 +53,101 @@ public class MainActivity extends AppCompatActivity {
                             .replace(R.id.fragment_container, fragment)
                             .addToBackStack("step-details")
                             .commit();
+                    Log.d(LOG_TAG, "Added new step detail fragment with backstack");
                 } else {
                     fragment = existingFragment;
                     transaction
                             .replace(R.id.fragment_container, fragment)
                             .commit();
+                    Log.d(LOG_TAG, "Used existing step detail fragment");
                 }
-
             }
+        };
+
+        OnFragmentItemClickListener recipeListener = () -> {
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            Fragment existingFragment = getSupportFragmentManager().findFragmentByTag("recipe-details");
+
+            Log.d(LOG_TAG, "Loading recipe details fragment");
+            if(existingFragment==null) {
+                RecipeDetailsFragment stepListFragment = RecipeDetailsFragment.newInstance(stepListener);
+                fragment = stepListFragment;
+                transaction
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack("recipe-detail")
+                        .commit();
+                Log.d(LOG_TAG, "Added new recipe detail fragment with backstack");
+            } else {
+                fragment = existingFragment;
+                transaction
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+                Log.d(LOG_TAG, "Used existing recipe detail fragment");
+            }
+        };
+
+        viewModel.getSelectedRecipe().observe(MainActivity.this, recipe -> {
+            // update widget with selected recipe ingredients
+            updateWidget(recipe);
+
+            //if(savedInstanceState!=null) return;
+
+            /*
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            Fragment existingFragment = getSupportFragmentManager().findFragmentByTag("recipe-details");
+
+            Log.d(LOG_TAG, "Loading recipe details fragment");
+            if(existingFragment==null) {
+                RecipeDetailsFragment stepListFragment = RecipeDetailsFragment.newInstance();
+                fragment = stepListFragment;
+                transaction
+                        .replace(R.id.fragment_container, fragment)
+                        .addToBackStack("recipe-detail")
+                        .commit();
+                Log.d(LOG_TAG, "Added new recipe detail fragment with backstack");
+            } else {
+                fragment = existingFragment;
+                transaction
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
+                Log.d(LOG_TAG, "Used existing recipe detail fragment");
+            }
+            */
+
+        });
+
+        viewModel.getSelectedStep().observe(MainActivity.this, step -> {
+            //if(savedInstanceState!=null) return;
+            /*
+            boolean isTwoPaneLayout = getResources().getBoolean(R.bool.twoPaneLayout);
+            if(!isTwoPaneLayout) {
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                Fragment existingFragment = getSupportFragmentManager().findFragmentByTag("step-details");
+
+                Log.d(LOG_TAG, "Loading step details fragment");
+                if(existingFragment==null) {
+                    StepDetailsFragment stepDetailsFragment = StepDetailsFragment.newInstance();
+                    fragment = stepDetailsFragment;
+                    transaction
+                            .replace(R.id.fragment_container, fragment)
+                            .addToBackStack("step-details")
+                            .commit();
+                    Log.d(LOG_TAG, "Added new step detail fragment with backstack");
+                } else {
+                    fragment = existingFragment;
+                    transaction
+                            .replace(R.id.fragment_container, fragment)
+                            .commit();
+                    Log.d(LOG_TAG, "Used existing step detail fragment");
+                }
+            }
+            */
         });
 
         if(findViewById(R.id.fragment_container) != null) {
             if(savedInstanceState!=null) return;
 
-            RecipeListFragment recipeListFragment = RecipeListFragment.newInstance();
+            RecipeListFragment recipeListFragment = RecipeListFragment.newInstance(recipeListener);
             fragment = recipeListFragment;
             getSupportFragmentManager()
                     .beginTransaction()
@@ -107,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /*
     @Override
     public void onBackPressed() {
         if(getSupportFragmentManager().getBackStackEntryCount() > 0) {
@@ -116,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
         }
         getSupportFragmentManager().beginTransaction().remove(fragment).commit();
     }
+    */
 
     /**
      * Update app widgets with recipe object

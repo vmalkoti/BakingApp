@@ -8,13 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
 
 import com.example.malkoti.bakingapp.R;
 import com.example.malkoti.bakingapp.adapters.IngredientsAdapter;
@@ -37,8 +33,10 @@ public class RecipeDetailsFragment extends Fragment {
     private  RecyclerView recipeStepsRecyclerView;
     private IngredientsAdapter ingredientsAdapter;
     private StepsAdapter stepsAdapter;
-    private StepsAdapter.OnStepItemClickListener mListener;
+    private StepsAdapter.OnStepItemClickListener adapterItemListener;
+
     private RecipeViewModel recipeViewModel;
+    private OnFragmentItemClickListener fragmentClickListener;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -47,8 +45,9 @@ public class RecipeDetailsFragment extends Fragment {
     public RecipeDetailsFragment() { }
 
     @SuppressWarnings("unused")
-    public static RecipeDetailsFragment newInstance() {
+    public static RecipeDetailsFragment newInstance(OnFragmentItemClickListener listener) {
         RecipeDetailsFragment fragment = new RecipeDetailsFragment();
+        fragment.fragmentClickListener = listener;
         return fragment;
     }
 
@@ -75,7 +74,7 @@ public class RecipeDetailsFragment extends Fragment {
         recipeStepsRecyclerView = view.findViewById(R.id.recipe_steps);
         LayoutManager recipeStepsLayoutManager = new LinearLayoutManager(context);
         recipeStepsRecyclerView.setLayoutManager(recipeStepsLayoutManager);
-        stepsAdapter = new StepsAdapter(mListener);
+        stepsAdapter = new StepsAdapter(adapterItemListener);
         recipeStepsRecyclerView.setAdapter(stepsAdapter);
 
         recipeViewModel = ViewModelProviders.of(getActivity()).get(RecipeViewModel.class);
@@ -107,7 +106,7 @@ public class RecipeDetailsFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
 
-        mListener = (step) -> {
+        adapterItemListener = (step) -> {
             recipeViewModel.setSelectedStep(step);
         };
 
@@ -116,6 +115,7 @@ public class RecipeDetailsFragment extends Fragment {
     private void loadRecipeDetails(Recipe recipe) {
         ingredientsAdapter.setData(recipe.getIngredients());
         stepsAdapter.setData(recipe.getSteps());
+        fragmentClickListener.onClick();
     }
 
 }
