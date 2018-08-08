@@ -108,14 +108,18 @@ public class RecipeDetailsFragment extends Fragment {
 
         adapterItemListener = (step) -> {
             recipeViewModel.setSelectedStep(step);
+            fragmentClickListener.onClick();
         };
 
     }
 
+    /**
+     *
+     * @param recipe
+     */
     private void loadRecipeDetails(Recipe recipe) {
         ingredientsAdapter.setData(recipe.getIngredients());
         stepsAdapter.setData(recipe.getSteps());
-        fragmentClickListener.onClick();
     }
 
 }
