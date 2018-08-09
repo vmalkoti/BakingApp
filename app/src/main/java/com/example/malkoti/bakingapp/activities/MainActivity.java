@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
             viewModel.setSelectedRecipe(passedRecipe);
             loadRecipeDetailsFragment(stepListener);
         }
+
     }
 
 
@@ -121,7 +122,6 @@ public class MainActivity extends AppCompatActivity {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment existingFragment = getSupportFragmentManager().findFragmentByTag(fragmentTag);
 
-        //Log.d(LOG_TAG, "Loading recipe details fragment");
         if(existingFragment==null) {
             RecipeDetailsFragment stepListFragment = RecipeDetailsFragment.newInstance(stepClickListener);
             fragment = stepListFragment;
@@ -129,13 +129,11 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(fragmentTag)
                     .commit();
-            //Log.d(LOG_TAG, "Added new recipe detail fragment with backstack");
         } else {
             fragment = existingFragment;
             transaction
                     .replace(R.id.fragment_container, fragment)
                     .commit();
-            //Log.d(LOG_TAG, "Used existing recipe detail fragment");
         }
     }
 
@@ -155,13 +153,11 @@ public class MainActivity extends AppCompatActivity {
                     .replace(R.id.fragment_container, fragment)
                     .addToBackStack(fragmentTag)
                     .commit();
-            //Log.d(LOG_TAG, "Added new step detail fragment with backstack");
         } else {
             fragment = existingFragment;
             transaction
                     .replace(R.id.fragment_container, fragment)
                     .commit();
-            //Log.d(LOG_TAG, "Used existing step detail fragment");
         }
     }
 }

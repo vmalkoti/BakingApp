@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.malkoti.bakingapp.R;
 import com.example.malkoti.bakingapp.adapters.IngredientsAdapter;
@@ -29,14 +30,14 @@ import com.example.malkoti.bakingapp.model.Recipe;
 public class RecipeDetailsFragment extends Fragment {
     private static final String LOG_TAG = "DEBUG_" + RecipeDetailsFragment.class.getSimpleName();
 
-    private RecyclerView recipeIngredientsRecyclerView;
-    private  RecyclerView recipeStepsRecyclerView;
     private IngredientsAdapter ingredientsAdapter;
     private StepsAdapter stepsAdapter;
     private StepsAdapter.OnStepItemClickListener adapterItemListener;
 
     private RecipeViewModel recipeViewModel;
     private OnFragmentItemClickListener fragmentClickListener;
+
+    private TextView recipeName;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -63,15 +64,17 @@ public class RecipeDetailsFragment extends Fragment {
 
         Context context = view.getContext();
 
+        recipeName = view.findViewById(R.id.recipe_name_header);
+
         // Ingredients RecyclerView
-        recipeIngredientsRecyclerView = view.findViewById(R.id.recipe_ingredients);
+        RecyclerView recipeIngredientsRecyclerView = view.findViewById(R.id.recipe_ingredients);
         LayoutManager recipeIngredientsLayoutManager = new LinearLayoutManager(context);
         recipeIngredientsRecyclerView.setLayoutManager(recipeIngredientsLayoutManager);
         ingredientsAdapter = new IngredientsAdapter();
         recipeIngredientsRecyclerView.setAdapter(ingredientsAdapter);
 
         // Steps RecyclerView
-        recipeStepsRecyclerView = view.findViewById(R.id.recipe_steps);
+        RecyclerView recipeStepsRecyclerView = view.findViewById(R.id.recipe_steps);
         LayoutManager recipeStepsLayoutManager = new LinearLayoutManager(context);
         recipeStepsRecyclerView.setLayoutManager(recipeStepsLayoutManager);
         stepsAdapter = new StepsAdapter(adapterItemListener);
@@ -118,6 +121,7 @@ public class RecipeDetailsFragment extends Fragment {
      * @param recipe
      */
     private void loadRecipeDetails(Recipe recipe) {
+        recipeName.setText(recipe.getName());
         ingredientsAdapter.setData(recipe.getIngredients());
         stepsAdapter.setData(recipe.getSteps());
     }

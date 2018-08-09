@@ -6,69 +6,86 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="3">
+    android:orientation="vertical">
 
-    <android.support.v4.widget.NestedScrollView
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
-
-
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/recipe_ingredients_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@android:color/holo_orange_light"
-                android:text="Ingredients"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recipe_ingredients"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/recipe_ingredients_header"
-                tools:context=".fragments.RecipeDetailsFragment"
-                tools:listitem="@layout/ingredient_item" />
-
-            <TextView
-                android:id="@+id/recipe_steps_header"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:background="@android:color/holo_orange_light"
-                android:text="Steps"
-                android:textStyle="bold"
-                app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/recipe_ingredients" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recipe_steps"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                app:layout_constraintLeft_toLeftOf="@id/recipe_steps_header"
-                app:layout_constraintTop_toBottomOf="@id/recipe_steps_header"
-                tools:context=".fragments.RecipeDetailsFragment"
-                tools:listitem="@layout/step_item" />
-
-        </android.support.constraint.ConstraintLayout>
-
-    </android.support.v4.widget.NestedScrollView>
-
-    <fragment
-        android:id="@+id/step_details"
-        android:name="com.example.malkoti.bakingapp.fragments.StepDetailsFragment"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/recipe_name_header"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="2"
-        tools:layout="@layout/fragment_step_details" />
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        tools:text="@tools:sample/lorem" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="3">
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/recipe_ingredients_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@android:color/holo_orange_light"
+                    android:text="Ingredients"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recipe_ingredients"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/recipe_ingredients_header"
+                    tools:context=".fragments.RecipeDetailsFragment"
+                    tools:listitem="@layout/ingredient_item" />
+
+                <TextView
+                    android:id="@+id/recipe_steps_header"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@android:color/holo_orange_light"
+                    android:text="Steps"
+                    android:textStyle="bold"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/recipe_ingredients" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recipe_steps"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    app:layout_constraintLeft_toLeftOf="@id/recipe_steps_header"
+                    app:layout_constraintTop_toBottomOf="@id/recipe_steps_header"
+                    tools:context=".fragments.RecipeDetailsFragment"
+                    tools:listitem="@layout/step_item" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <fragment
+            android:id="@+id/step_details"
+            android:name="com.example.malkoti.bakingapp.fragments.StepDetailsFragment"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            tools:layout="@layout/fragment_step_details" />
+
+
+    </LinearLayout>
 
 </LinearLayout>
