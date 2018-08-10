@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
@@ -34,8 +35,10 @@ public class NavigationTest {
 
     @Test
     public void navigationTest() {
+        String recipeName = "Nutella Pie";
+
         ViewInteraction appCompatTextView = onView(
-                allOf(withId(R.id.recipe_name), withText("Nutella Pie"),
+                allOf(withId(R.id.recipe_name_item), withText(recipeName),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.recipes),
@@ -43,9 +46,12 @@ public class NavigationTest {
                                 0),
                         isDisplayed()));
         appCompatTextView.perform(click());
+        // check text of the header
+        onView(withId(R.id.recipe_name_header)).check(matches(withText(recipeName)));
 
+        String stepName = "Recipe Introduction";
         ViewInteraction appCompatTextView2 = onView(
-                allOf(withId(R.id.step_name), withText("Recipe Introduction"),
+                allOf(withId(R.id.step_name), withText(stepName),
                         childAtPosition(
                                 childAtPosition(
                                         withId(R.id.recipe_steps),

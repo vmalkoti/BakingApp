@@ -64,7 +64,11 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         }
 
         public void bindViewHolder(Recipe.Step step) {
-            stepName.setText(step.getShortDescription());
+            // Used String as suggested by Code Inspection
+            // Add 1, step number starts from 0
+            String stepText = String.valueOf(step.getId() + 1) + ". "
+                    + step.getShortDescription();
+            stepName.setText(stepText);
             stepName.setOnClickListener((view) -> {listener.onItemClicked(step);});
         }
     }

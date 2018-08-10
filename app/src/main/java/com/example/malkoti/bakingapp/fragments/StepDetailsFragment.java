@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.malkoti.bakingapp.R;
@@ -29,6 +30,8 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+
+import java.util.List;
 
 
 /*
@@ -50,6 +53,9 @@ public class StepDetailsFragment extends Fragment {
     private TextView stepDescription;
     private PlayerView playerView;
     private SimpleExoPlayer player;
+    private Button nextStep;
+    private Button prevStep;
+
     private boolean playWhenReady = false;
     private int currentWindow = 0;
     private long playbackPosition = 0;
@@ -79,13 +85,25 @@ public class StepDetailsFragment extends Fragment {
         stepVideoUrl = view.findViewById(R.id.step_video_url);
         stepDescription = view.findViewById(R.id.step_description);
         playerView = view.findViewById(R.id.step_video);
+        nextStep = view.findViewById(R.id.next_step);
+        prevStep = view.findViewById(R.id.prev_step);
 
         recipeViewModel = ViewModelProviders.of(getActivity()).get(RecipeViewModel.class);
-        recipeViewModel.getSelectedStep().observe(StepDetailsFragment.this, step -> loadStepDetails(step));
+        recipeViewModel.getSelectedStep().observe(StepDetailsFragment.this, step -> {
+            loadStepDetails(step);
+            prevStep.setEnabled(!isCurrentStepFirstStep());
+            nextStep.setEnabled(!isCurrentStepLastStep());
+
+        });
+
+        nextStep.setOnClickListener(v -> loadNextStep());
+        prevStep.setOnClickListener(v -> loadPrevStep());
 
         if(!getResources().getBoolean(R.bool.twoPaneLayout)) {
             setVideoPlayerSize(getResources().getConfiguration().orientation);
         }
+
+        hideStepNavButtons(getResources().getBoolean(R.bool.twoPaneLayout));
 
         return view;
     }
@@ -262,5 +280,66 @@ public class StepDetailsFragment extends Fragment {
     private void setTextViewVisibility(int visibility) {
         stepVideoUrl.setVisibility(visibility);
         stepDescription.setVisibility(visibility);
+    }
+
+    /**
+     *
+     */
+    private void loadNextStep() {
+        releasePlayer();
+
+        List<Recipe.Step> steps = recipeViewModel.getSelectedRecipe().getValue().getSteps();
+        Recipe.Step currentStep = recipeViewModel.getSelectedStep().getValue();
+        int index = steps.indexOf(currentStep);
+        recipeViewModel.setSelectedStep(steps.get(index+1));
+    }
+
+    /**
+     *
+     */
+    private void loadPrevStep() {
+        releasePlayer();
+
+        List<Recipe.Step> steps = recipeViewModel.getSelectedRecipe().getValue().getSteps();
+        Recipe.Step currentStep = recipeViewModel.getSelectedStep().getValue();
+        int index = steps.indexOf(currentStep);
+        recipeViewModel.setSelectedStep(steps.get(index-1));
+    }
+
+    /**
+     *
+     * @return
+     */
+    private boolean isCurrentStepLastStep() {
+        List<Recipe.Step> steps = recipeViewModel.getSelectedRecipe().getValue().getSteps();
+        Recipe.Step currentStep = recipeViewModel.getSelectedStep().getValue();
+        int index = steps.indexOf(currentStep);
+        return (index >= steps.size()-1);
+    }
+
+    /**
+     *
+     * @return
+     */
+    private boolean isCurrentStepFirstStep() {
+        List<Recipe.Step> steps = recipeViewModel.getSelectedRecipe().getValue().getSteps();
+        Recipe.Step currentStep = recipeViewModel.getSelectedStep().getValue();
+        int index = steps.indexOf(currentStep);
+        return (index == 0);
+    }
+
+    /**
+     *
+     * @param hide
+     */
+    private void hideStepNavButtons(boolean hide) {
+        if(hide) {
+            prevStep.setVisibility(View.INVISIBLE);
+            nextStep.setVisibility(View.INVISIBLE);
+        } else {
+            prevStep.setVisibility(View.VISIBLE);
+            prevStep.setVisibility(View.VISIBLE);
+        }
+
     }
 }
