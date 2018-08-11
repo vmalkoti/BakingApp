@@ -49,7 +49,7 @@ public class StepDetailsFragment extends Fragment {
 
     private RecipeViewModel recipeViewModel;
 
-    private TextView stepVideoUrl;
+    private TextView stepNum;
     private TextView stepDescription;
     private PlayerView playerView;
     private SimpleExoPlayer player;
@@ -82,7 +82,7 @@ public class StepDetailsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_step_details, container, false);
 
-        stepVideoUrl = view.findViewById(R.id.step_video_url);
+        stepNum = view.findViewById(R.id.step_num);
         stepDescription = view.findViewById(R.id.step_description);
         playerView = view.findViewById(R.id.step_video);
         nextStep = view.findViewById(R.id.next_step);
@@ -113,7 +113,7 @@ public class StepDetailsFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
         if(savedInstanceState != null) {
-            Log.d(LOG_TAG, "Set player state");
+            Log.d(LOG_TAG, "Set player state in onActivityCreated");
             playbackPosition = savedInstanceState.getLong("playbackPosition", 0);
             Log.d(LOG_TAG, "Playback position received " + playbackPosition);
         }
@@ -165,6 +165,7 @@ public class StepDetailsFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("playbackPosition", playbackPosition);
+        Log.d(LOG_TAG, "Playback position saved " + playbackPosition);
     }
 
 
@@ -214,6 +215,7 @@ public class StepDetailsFragment extends Fragment {
     private void releasePlayer() {
         if(player != null) {
             playbackPosition = player.getCurrentPosition();
+            Log.d(LOG_TAG, "Upated current position = " + playbackPosition);
             currentWindow = player.getCurrentWindowIndex();
             playWhenReady = player.getPlayWhenReady();
             player.release();
@@ -226,16 +228,16 @@ public class StepDetailsFragment extends Fragment {
      * @param step Step object to read details
      */
     private void loadStepDetails(Recipe.Step step) {
-        //Log.d(LOG_TAG, "Loaded new step " + step.getId());
-        stepVideoUrl.setText(step.getVideoURL());
+        String stepNumber = "Step " + String.valueOf(step.getId()+1);
+        stepNum.setText(stepNumber);
         stepDescription.setText(step.getDescription());
         releasePlayer();
         if(step.getVideoURL()==null || step.getVideoURL().trim().equals("")) {
             playerView.setVisibility(View.GONE);
+            releasePlayer();
         } else {
             playerView.setVisibility(View.VISIBLE);
             initializePlayer();
-            //Log.d(LOG_TAG, "Video  " + step.getVideoURL());
         }
     }
 
@@ -278,12 +280,12 @@ public class StepDetailsFragment extends Fragment {
      * @param visibility
      */
     private void setTextViewVisibility(int visibility) {
-        stepVideoUrl.setVisibility(visibility);
+        stepNum.setVisibility(visibility);
         stepDescription.setVisibility(visibility);
     }
 
     /**
-     *
+     * Get next Step object and update ViewModel
      */
     private void loadNextStep() {
         releasePlayer();
@@ -295,7 +297,7 @@ public class StepDetailsFragment extends Fragment {
     }
 
     /**
-     *
+     * Get previous Step object and update ViewModel
      */
     private void loadPrevStep() {
         releasePlayer();
@@ -307,19 +309,19 @@ public class StepDetailsFragment extends Fragment {
     }
 
     /**
-     *
-     * @return
+     * Check if current step is the last step of recipe
+     * @return True if it is last step; else false
      */
     private boolean isCurrentStepLastStep() {
         List<Recipe.Step> steps = recipeViewModel.getSelectedRecipe().getValue().getSteps();
         Recipe.Step currentStep = recipeViewModel.getSelectedStep().getValue();
         int index = steps.indexOf(currentStep);
-        return (index >= steps.size()-1);
+        return (index == steps.size()-1);
     }
 
     /**
-     *
-     * @return
+     * Check if current step is the first step of recipe
+     * @return True if it is first step; else false
      */
     private boolean isCurrentStepFirstStep() {
         List<Recipe.Step> steps = recipeViewModel.getSelectedRecipe().getValue().getSteps();
@@ -329,8 +331,8 @@ public class StepDetailsFragment extends Fragment {
     }
 
     /**
-     *
-     * @param hide
+     * Hide or show the Previous/Next buttons
+     * @param hide Boolean value indicating whether the buttons should be hidden
      */
     private void hideStepNavButtons(boolean hide) {
         if(hide) {

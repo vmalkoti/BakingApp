@@ -13,10 +13,9 @@
         android:layout_height="wrap_content"
         android:background="#09C"
         android:gravity="center"
-        android:contentDescription="@string/appwidget_text"
         android:text="@string/appwidget_text"
         android:textColor="#ffffff"
-        android:textSize="24sp"
+        android:textSize="@dimen/screen_header_text"
         android:textStyle="bold|italic" />
 
     <ListView

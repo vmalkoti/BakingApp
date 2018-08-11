@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-
-<android.support.v4.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:name="com.example.malkoti.bakingapp.fragments.RecipeDetailsFragment"
-    android:fillViewport="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
 
     <android.support.constraint.ConstraintLayout
@@ -20,9 +18,9 @@
             android:id="@+id/recipe_name_header"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
-            android:textStyle="bold"
             android:gravity="center"
+            android:textSize="@dimen/screen_header_text"
+            android:textStyle="bold"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -32,10 +30,12 @@
             android:id="@+id/recipe_ingredients_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="@dimen/default_margin"
             android:background="@android:color/holo_orange_light"
+            android:gravity="center"
+            android:text="@string/ingredients_header_text"
+            android:textSize="@dimen/section_header_size"
             android:textStyle="bold"
-            android:text="Ingredients"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@id/recipe_name_header" />
 
@@ -52,10 +52,12 @@
             android:id="@+id/recipe_steps_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="@dimen/default_margin"
             android:background="@android:color/holo_orange_light"
+            android:gravity="center"
+            android:text="@string/steps_header_text"
+            android:textSize="@dimen/section_header_size"
             android:textStyle="bold"
-            android:text="Steps"
             app:layout_constraintLeft_toLeftOf="@id/recipe_ingredients"
             app:layout_constraintTop_toBottomOf="@id/recipe_ingredients" />
 

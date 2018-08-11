@@ -17,7 +17,7 @@
         android:id="@+id/recipe_ingredient_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
+        android:layout_margin="@dimen/narrow_margin"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:textAppearance="?attr/textAppearanceListItem"

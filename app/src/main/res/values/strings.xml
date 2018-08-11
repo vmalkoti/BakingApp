@@ -2,4 +2,9 @@
     <string name="app_name">BakingApp</string>
     <string name="appwidget_text">Select a recipe in the app to view ingredients here</string>
     <string name="add_widget">Add widget</string>
+    <string name="steps_header_text">Steps</string>
+    <string name="ingredients_header_text">Ingredients</string>
+    <string name="prev_btn_text">Previous</string>
+    <string name="next_btn_text">Next</string>
+    <string name="content_desc_video">Video for the step, if available</string>
 </resources>
