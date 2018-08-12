@@ -40,7 +40,7 @@ public class IngredientsWidget extends AppWidgetProvider {
 
             Intent serviceIntent = new Intent(context, RecipeWidgetService.class);
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            serviceIntent.putExtra(RecipeWidgetService.RECIPE_EXTRA, recipe);
+            //serviceIntent.putExtra(RecipeWidgetService.RECIPE_EXTRA, recipe);
             views.setRemoteAdapter(R.id.appwidget_recipe_ingredients_list, serviceIntent);
 
             Intent clickIntent = new Intent(context, MainActivity.class);
@@ -63,8 +63,6 @@ public class IngredientsWidget extends AppWidgetProvider {
         if(p!=null) {
             this.recipe = (Recipe) p;
             //Log.d(LOG_TAG, "recipe object in onReceive = " + recipe.getName());
-        } else {
-            //Log.d(LOG_TAG, "no recipe object in onReceive");
         }
         super.onReceive(context, intent);
     }
