@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(context, IngredientsWidget.class);
         intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-        intent.putExtra(RecipeWidgetService.RECIPE_EXTRA, recipe);
+        //intent.putExtra(RecipeWidgetService.RECIPE_EXTRA, recipe);
         int[] ids = AppWidgetManager
                 .getInstance(context)
                 .getAppWidgetIds(

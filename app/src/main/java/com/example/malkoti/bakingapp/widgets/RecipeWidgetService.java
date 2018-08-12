@@ -91,6 +91,10 @@ public class RecipeWidgetService extends RemoteViewsService {
             remoteViews.setTextViewText(android.R.id.text1,
                     recipe.getIngredients().get(position).toString());
 
+            Intent fillInIntent = new Intent();
+            fillInIntent.putExtra(RECIPE_EXTRA, this.recipe);
+            remoteViews.setOnClickFillInIntent(android.R.id.text1, fillInIntent);
+
             return remoteViews;
         }
 
@@ -111,7 +115,7 @@ public class RecipeWidgetService extends RemoteViewsService {
 
         @Override
         public boolean hasStableIds() {
-            return true;
+            return false;
         }
     }
 

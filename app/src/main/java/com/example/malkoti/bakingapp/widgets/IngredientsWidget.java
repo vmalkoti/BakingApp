@@ -41,15 +41,16 @@ public class IngredientsWidget extends AppWidgetProvider {
             Intent serviceIntent = new Intent(context, RecipeWidgetService.class);
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
             serviceIntent.putExtra(RecipeWidgetService.RECIPE_EXTRA, recipe);
-            //serviceIntent.setData(Uri.parse(serviceIntent.toUri(Intent.URI_INTENT_SCHEME)));
-            views.setRemoteAdapter(R.id.recipe_ingredients_list, serviceIntent);
+            views.setRemoteAdapter(R.id.appwidget_recipe_ingredients_list, serviceIntent);
 
             Intent clickIntent = new Intent(context, MainActivity.class);
             PendingIntent appPendingIntent = PendingIntent.getActivity(context,
                     0, clickIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-            views.setPendingIntentTemplate(R.id.recipe_ingredients_list, appPendingIntent);
+            views.setPendingIntentTemplate(R.id.appwidget_recipe_ingredients_list, appPendingIntent);
 
-            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.recipe_ingredients_list);
+            views.setOnClickPendingIntent(R.id.appwidget_recipe_name, appPendingIntent);
+
+            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.appwidget_recipe_ingredients_list);
             appWidgetManager.updateAppWidget(appWidgetId, null);
             appWidgetManager.updateAppWidget(appWidgetId, views);
         }
@@ -61,9 +62,9 @@ public class IngredientsWidget extends AppWidgetProvider {
         Parcelable p = intent.getParcelableExtra(RecipeWidgetService.RECIPE_EXTRA);
         if(p!=null) {
             this.recipe = (Recipe) p;
-            Log.d(LOG_TAG, "recipe object in onReceive = " + recipe.getName());
+            //Log.d(LOG_TAG, "recipe object in onReceive = " + recipe.getName());
         } else {
-            Log.d(LOG_TAG, "no recipe object in onReceive");
+            //Log.d(LOG_TAG, "no recipe object in onReceive");
         }
         super.onReceive(context, intent);
     }
