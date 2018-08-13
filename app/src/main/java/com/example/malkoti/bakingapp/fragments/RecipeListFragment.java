@@ -43,6 +43,10 @@ public class RecipeListFragment extends Fragment {
         return fragment;
     }
 
+    public void setClickListener(OnFragmentItemClickListener listener) {
+        this.fragmentClickListener = listener;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

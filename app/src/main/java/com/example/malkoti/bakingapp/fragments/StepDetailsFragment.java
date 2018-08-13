@@ -71,6 +71,7 @@ public class StepDetailsFragment extends Fragment {
         return new StepDetailsFragment();
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -61,6 +61,14 @@ public class MainActivity extends AppCompatActivity {
         if(findViewById(R.id.fragment_container) != null) {
             if(savedInstanceState==null) {
                 loadRecipeListFragment(recipeListener);
+            } else {
+                // to handle null listeners after rotation
+                Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+                if(fragment instanceof RecipeListFragment) {
+                    ((RecipeListFragment) fragment).setClickListener(recipeListener);
+                } else if(fragment instanceof RecipeDetailsFragment) {
+                    ((RecipeDetailsFragment) fragment).setClickListener(stepListener);
+                }
             }
         }
 
@@ -104,6 +112,8 @@ public class MainActivity extends AppCompatActivity {
      * @param recipeClickListener Listener for recipe item clicked in list of recipes
      */
     private void loadRecipeListFragment(OnFragmentItemClickListener recipeClickListener) {
+        final String fragmentTag = "recipe-list";
+
         RecipeListFragment recipeListFragment = RecipeListFragment.newInstance(recipeClickListener);
         fragment = recipeListFragment;
         getSupportFragmentManager()
@@ -126,13 +136,15 @@ public class MainActivity extends AppCompatActivity {
             RecipeDetailsFragment stepListFragment = RecipeDetailsFragment.newInstance(stepClickListener);
             fragment = stepListFragment;
             transaction
-                    .replace(R.id.fragment_container, fragment)
+                    .replace(R.id.fragment_container, stepListFragment)
                     .addToBackStack(fragmentTag)
                     .commit();
         } else {
             fragment = existingFragment;
+            RecipeDetailsFragment stepListFragment = (RecipeDetailsFragment) existingFragment;
+            stepListFragment.setClickListener(stepClickListener);
             transaction
-                    .replace(R.id.fragment_container, fragment)
+                    .replace(R.id.fragment_container, stepListFragment)
                     .commit();
         }
     }
