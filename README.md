@@ -1,7 +1,7 @@
 ## Baking app
 Code for Udacity Android Developer Nanodegree Project 4 - Baking App
 
-###What Will I Learn?
+### What Will I Learn
 In this project we will:
 * Use Exoplayer to display videos.
 * Handle error cases in Android.
@@ -14,9 +14,17 @@ In this project we will:
 * Single activity with multiple fragments
 * Master-detail flow
 
+
 #### Libraries used
 1. Retrofit (network calls)
 2. LiveData (lifecycle aware data)
 3. Espresso (test framework)
 
+#### Known Issue
+Espresso test sometimes fails. 
 
+**Observation:** This happens after emulator is left for some time without any user interaction. 
+
+**Symptom:** Homescreen date/time widget has a translucent background. At that time, on running Espresso test, app doesn't fully launch and tests fail.
+
+**Workaround:** Manually click on emulator homescreen before running Espresso tests.  
