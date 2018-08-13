@@ -94,6 +94,9 @@ public class StepDetailsFragment extends Fragment {
             prevStep.setEnabled(!isCurrentStepFirstStep());
             nextStep.setEnabled(!isCurrentStepLastStep());
 
+            if(!getResources().getBoolean(R.bool.twoPaneLayout)) {
+                setVideoPlayerSize(getResources().getConfiguration().orientation);
+            }
         });
 
         nextStep.setOnClickListener(v -> loadNextStep());
@@ -262,11 +265,15 @@ public class StepDetailsFragment extends Fragment {
         //Log.d(LOG_TAG, "Changing player view size");
         switch (screenOrientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
-                leftMargin = rightMargin = topMargin = 0;
-                params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                setTextViewVisibility(View.GONE);
-                ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
-                break;
+                String url = recipeViewModel.getSelectedStep().getValue().getVideoURL();
+                if(url != null && !url.trim().equals("")) {
+                    leftMargin = rightMargin = topMargin = 0;
+                    params.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                    setTextViewVisibility(View.GONE);
+                    ((AppCompatActivity) getActivity()).getSupportActionBar().hide();
+                    hideStepNavButtons(true);
+                    break;
+                }
             case Configuration.ORIENTATION_PORTRAIT:
                 // fall through to default
             default:
@@ -275,6 +282,7 @@ public class StepDetailsFragment extends Fragment {
                 params.height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 setTextViewVisibility(View.VISIBLE);
                 ((AppCompatActivity) getActivity()).getSupportActionBar().show();
+                hideStepNavButtons(false);
                 break;
         }
         params.setMargins(leftMargin,topMargin,rightMargin,bottomMargin);
