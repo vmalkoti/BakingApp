@@ -30,9 +30,8 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.step_item, parent, false);
-        StepsViewHolder viewHolder = new StepsViewHolder(view);
 
-        return viewHolder;
+        return new StepsViewHolder(view);
     }
 
     @Override
@@ -55,21 +54,24 @@ public class StepsAdapter extends RecyclerView.Adapter<StepsAdapter.StepsViewHol
     /**
      * ViewHolder class for list of steps
      */
-    public class StepsViewHolder extends RecyclerView.ViewHolder {
+    class StepsViewHolder extends RecyclerView.ViewHolder {
         private TextView stepName;
 
-        public StepsViewHolder(View itemView) {
+        StepsViewHolder(View itemView) {
             super(itemView);
             stepName = itemView.findViewById(R.id.step_name);
         }
 
-        public void bindViewHolder(Recipe.Step step) {
+        void bindViewHolder(Recipe.Step step) {
             // Used String as suggested by Code Inspection
             // Add 1, step number starts from 0
-            String stepText = String.valueOf(step.getId() + 1) + ". "
-                    + step.getShortDescription();
+            int stepId = step.getId();
+            String stepText = step.getShortDescription();
+            if(stepId > 0) {
+                 stepText = String.valueOf(stepId) + ". " + stepText;
+            }
             stepName.setText(stepText);
-            stepName.setOnClickListener((view) -> {listener.onItemClicked(step);});
+            stepName.setOnClickListener((view) -> listener.onItemClicked(step));
         }
     }
 }

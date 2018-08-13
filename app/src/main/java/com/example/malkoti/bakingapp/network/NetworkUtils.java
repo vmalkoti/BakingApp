@@ -19,24 +19,6 @@ public final class NetworkUtils {
     public static LiveData<List<Recipe>> getRecipes() {
         Call<List<Recipe>> call = ApiClient.getApiInterface().getRecipes();
         return new RetrofitLiveData(call);
-        /*
-        call.enqueue(new Callback<List<Recipe>>() {
-            @Override
-            public void onResponse(Call<List<Recipe>> call, Response<List<Recipe>> response) {
-                List<Recipe> recipes = response.body();
-                if(recipes == null) {
-                    Log.d(LOG_TAG, "Null recipes list");
-                    return;
-                }
-                Log.d(LOG_TAG, "Number of recipes=" + recipes.size());
-            }
-
-            @Override
-            public void onFailure(Call<List<Recipe>> call, Throwable t) {
-                Log.d(LOG_TAG, "ERROR: " + t.getMessage());
-            }
-        });
-        */
     }
 
     /**
@@ -46,7 +28,7 @@ public final class NetworkUtils {
         private static final String LOG_TAG = RetrofitLiveData.class.getSimpleName();
         private Call<List<Recipe>> call;
 
-        public RetrofitLiveData(Call<List<Recipe>> call) {
+        RetrofitLiveData(Call<List<Recipe>> call) {
             this.call = call;
         }
 

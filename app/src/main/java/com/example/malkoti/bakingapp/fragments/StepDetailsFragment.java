@@ -68,8 +68,7 @@ public class StepDetailsFragment extends Fragment {
 
     @SuppressWarnings("unused")
     public static StepDetailsFragment newInstance() {
-        StepDetailsFragment fragment = new StepDetailsFragment();
-        return fragment;
+        return new StepDetailsFragment();
     }
 
     @Override
@@ -228,7 +227,13 @@ public class StepDetailsFragment extends Fragment {
      * @param step Step object to read details
      */
     private void loadStepDetails(Recipe.Step step) {
-        String stepNumber = "Step " + String.valueOf(step.getId()+1);
+        int stepId = step.getId();
+        String stepNumber;
+        if(stepId==0) {
+            stepNumber = "Introduction";
+        } else {
+            stepNumber = "Step " + String.valueOf(stepId);
+        }
         stepNum.setText(stepNumber);
         stepDescription.setText(step.getDescription());
         releasePlayer();
@@ -277,7 +282,7 @@ public class StepDetailsFragment extends Fragment {
 
     /**
      * Show or hide textviews
-     * @param visibility
+     * @param visibility Visibility mode for the textview (View.VISIBLE, View.GONE, View.INSIVIBLE)
      */
     private void setTextViewVisibility(int visibility) {
         stepNum.setVisibility(visibility);

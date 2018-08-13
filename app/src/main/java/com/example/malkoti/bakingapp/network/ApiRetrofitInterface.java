@@ -1,4 +1,4 @@
-package com.example.malkoti.bakingapp.data;
+package com.example.malkoti.bakingapp.network;
 
 import com.example.malkoti.bakingapp.model.Recipe;
 
