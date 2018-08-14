@@ -22,6 +22,8 @@ In this project we will:
 4. Picasso (for displaying images)
 
 
+**Credits:** Placeholder image from [freepik](https://www.freepik.com)
+
 #### Known Issue
 Espresso test sometimes fails. 
 
