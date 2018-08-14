@@ -19,6 +19,8 @@ In this project we will:
 1. Retrofit (network calls)
 2. LiveData (lifecycle aware data)
 3. Espresso (test framework)
+4. Picasso (for displaying images)
+
 
 #### Known Issue
 Espresso test sometimes fails. 
