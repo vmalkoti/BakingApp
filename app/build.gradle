@@ -4,8 +4,8 @@ apply plugin: 'com.android.application'
 ext {
     supportLibraryVersion = '27.1.1'
     constraintLayoutVersion = '1.1.2'
-    minSdkVersion = 15
-    sdkVersion = 27
+    minVersion = 16
+    targetVersion = 27
     archLifecycleVersion = '1.1.1'
     retrofitVersion = '2.4.0'
     gsonVersion = '2.8.4'
@@ -15,11 +15,11 @@ ext {
 }
 
 android {
-    compileSdkVersion sdkVersion
+    compileSdkVersion targetVersion
     defaultConfig {
         applicationId "com.example.malkoti.bakingapp"
-        minSdkVersion 15
-        targetSdkVersion sdkVersion
+        minSdkVersion minVersion
+        targetSdkVersion targetVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

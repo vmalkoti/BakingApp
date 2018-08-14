@@ -75,6 +75,11 @@ public class StepDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(savedInstanceState != null) {
+            Log.d(LOG_TAG, "onCreate : Set player state in onActivityCreated");
+            playbackPosition = savedInstanceState.getLong("playbackPosition", 0);
+            Log.d(LOG_TAG, "onCreate : Playback position received " + playbackPosition);
+        }
     }
 
     @Override
@@ -115,11 +120,6 @@ public class StepDetailsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
-        if(savedInstanceState != null) {
-            Log.d(LOG_TAG, "Set player state in onActivityCreated");
-            playbackPosition = savedInstanceState.getLong("playbackPosition", 0);
-            Log.d(LOG_TAG, "Playback position received " + playbackPosition);
-        }
     }
 
     @Override
@@ -133,7 +133,7 @@ public class StepDetailsFragment extends Fragment {
         super.onStart();
         if(Util.SDK_INT > 23) {
             initializePlayer();
-            Log.d(LOG_TAG, "Called onStart");
+            Log.d(LOG_TAG, "onStart called");
         }
     }
 
@@ -142,7 +142,7 @@ public class StepDetailsFragment extends Fragment {
         super.onResume();
         if(Util.SDK_INT <= 23 || player == null) {
             initializePlayer();
-            Log.d(LOG_TAG, "Called onResume");
+            Log.d(LOG_TAG, "onResume called");
         }
     }
 
@@ -151,7 +151,7 @@ public class StepDetailsFragment extends Fragment {
         super.onPause();
         if(Util.SDK_INT <=23) {
             releasePlayer();
-            Log.d(LOG_TAG, "Called onPause");
+            Log.d(LOG_TAG, "onPause called");
         }
     }
 
@@ -160,7 +160,7 @@ public class StepDetailsFragment extends Fragment {
         super.onStop();
         if(Util.SDK_INT > 23) {
             releasePlayer();
-            Log.d(LOG_TAG, "Called onStop");
+            Log.d(LOG_TAG, "onStop called");
         }
     }
 
@@ -168,7 +168,7 @@ public class StepDetailsFragment extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putLong("playbackPosition", playbackPosition);
-        Log.d(LOG_TAG, "Playback position saved " + playbackPosition);
+        Log.d(LOG_TAG, "onSaveInstanceState : Playback position saved " + playbackPosition);
     }
 
 
@@ -184,19 +184,21 @@ public class StepDetailsFragment extends Fragment {
 
         String videoUrl = recipeViewModel.getSelectedStep().getValue().getVideoURL();
 
-        Log.d(LOG_TAG, "Get PlayerView instance and options ");
+        Log.d(LOG_TAG, "initializePlayer : Get PlayerView instance and options ");
         if(videoUrl != null && !videoUrl.trim().isEmpty()) {
             player = ExoPlayerFactory.newSimpleInstance(
                 new DefaultRenderersFactory(getContext()),
                 new DefaultTrackSelector(),
                 new DefaultLoadControl());
-            playerView.setPlayer(player);
-            player.setPlayWhenReady(playWhenReady);
-            player.seekTo(currentWindow, playbackPosition);
-            Log.d(LOG_TAG, "Playback position set " + playbackPosition);
 
             Uri uri = Uri.parse(videoUrl);
             player.prepare(buildMediaSource(uri), false, false);
+
+            playerView.setPlayer(player);
+            player.setPlayWhenReady(playWhenReady);
+            player.seekTo(currentWindow, playbackPosition);
+            Log.d(LOG_TAG, "initializePlayer : Playback position set " + playbackPosition);
+
         }
     }
 
@@ -217,10 +219,12 @@ public class StepDetailsFragment extends Fragment {
      */
     private void releasePlayer() {
         if(player != null) {
-            playbackPosition = player.getCurrentPosition();
-            Log.d(LOG_TAG, "Upated current position = " + playbackPosition);
-            currentWindow = player.getCurrentWindowIndex();
-            playWhenReady = player.getPlayWhenReady();
+            if(player.getCurrentPosition() > 0) {
+                playbackPosition = player.getCurrentPosition();
+                Log.d(LOG_TAG, "releasePlayer : Upated current position = " + playbackPosition);
+                currentWindow = player.getCurrentWindowIndex();
+                playWhenReady = player.getPlayWhenReady();
+            }
             player.release();
             player = null;
         }
