@@ -32,8 +32,8 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.recipe_item, parent, false);
-        RecipeViewHolder viewHolder = new RecipeViewHolder(view);
-        return viewHolder;
+        //RecipeViewHolder viewHolder = new RecipeViewHolder(view);
+        return new RecipeViewHolder(view);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
 
     /**
      * Change data in the adapter
-     * @param recipes
+     * @param recipes List of recipe objects to populate in RecyclerView
      */
     public void setData(List<Recipe> recipes) {
         this.recipes = recipes;
@@ -62,12 +62,12 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
     class RecipeViewHolder extends RecyclerView.ViewHolder {
         private TextView recipeName;
 
-        public RecipeViewHolder(View itemView) {
+        RecipeViewHolder(View itemView) {
             super(itemView);
             recipeName = itemView.findViewById(R.id.recipe_name_item);
         }
 
-        public void bindViewHolder(Recipe recipe) {
+        void bindViewHolder(Recipe recipe) {
             recipeName.setText(recipe.getName());
             recipeName.setOnClickListener((view) -> listener.onItemClicked(recipe));
         }

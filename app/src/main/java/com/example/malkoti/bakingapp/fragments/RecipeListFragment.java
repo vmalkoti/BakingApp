@@ -61,7 +61,7 @@ public class RecipeListFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             RecyclerView.LayoutManager layoutManager;
-            Log.d(LOG_TAG, "Number of columns " + gridColumnCount);
+            //Log.d(LOG_TAG, "Number of columns " + gridColumnCount);
 
             gridColumnCount = getResources().getInteger(R.integer.gridColumns);
             if (gridColumnCount <= 1) {
@@ -74,7 +74,7 @@ public class RecipeListFragment extends Fragment {
             recyclerView.setAdapter(adapter);
 
             recipeViewModel = ViewModelProviders.of(getActivity()).get(RecipeViewModel.class);
-            recipeViewModel.getAllRecipes().observe(RecipeListFragment.this, recipes -> adapter.setData(recipes));
+            recipeViewModel.getAllRecipes().observe(RecipeListFragment.this, adapter::setData);
         }
         return view;
     }
@@ -84,7 +84,7 @@ public class RecipeListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         adapterItemListener = (recipe) -> {
-            Log.d(LOG_TAG, "Clicked on recipe " + recipe.getName());
+            //Log.d(LOG_TAG, "Clicked on recipe " + recipe.getName());
             recipeViewModel.setSelectedRecipe(recipe);
             fragmentClickListener.onClick();
         };

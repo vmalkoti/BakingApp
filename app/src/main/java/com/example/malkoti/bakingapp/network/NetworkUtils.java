@@ -48,7 +48,7 @@ public final class NetworkUtils {
 
         @Override
         public void onFailure(Call<List<Recipe>> call, Throwable t) {
-            Log.d(LOG_TAG, "ERROR: " + t.getMessage());
+            Log.e(LOG_TAG, "ERROR: " + t.getMessage());
         }
     }
 }

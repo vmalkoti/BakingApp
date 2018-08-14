@@ -16,15 +16,14 @@ public class PreferencesUtil {
         Gson gson = new Gson();
         String json = gson.toJson(recipe);
         editor.putString(PREF_KEY, json);
-        editor.commit();
+        editor.apply();
     }
 
     public static Recipe getPreferences(Context context) {
         Gson gson = new Gson();
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         String json = preferences.getString(PREF_KEY, "");
-        Recipe recipe = gson.fromJson(json, Recipe.class);
-
-        return recipe;
+        //Recipe recipe = gson.fromJson(json, Recipe.class);
+        return gson.fromJson(json, Recipe.class);
     }
 }

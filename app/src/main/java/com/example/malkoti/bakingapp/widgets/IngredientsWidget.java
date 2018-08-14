@@ -28,15 +28,15 @@ public class IngredientsWidget extends AppWidgetProvider {
         // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget);
-            int id = 0;
 
             Recipe savedRecipe = PreferencesUtil.getPreferences(context);
             if(savedRecipe!=null) {
-                Log.d(LOG_TAG, "recipe object in onUpdate = " + savedRecipe.getName());
+                //Log.d(LOG_TAG, "recipe object in onUpdate = " + savedRecipe.getName());
                 views.setTextViewText(R.id.appwidget_recipe_name, savedRecipe.getName());
-            } else {
-                Log.d(LOG_TAG, "no recipe object in onUpdate");
             }
+            //else {
+                //Log.d(LOG_TAG, "no recipe object in onUpdate");
+            //}
 
             Intent serviceIntent = new Intent(context, RecipeWidgetService.class);
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);

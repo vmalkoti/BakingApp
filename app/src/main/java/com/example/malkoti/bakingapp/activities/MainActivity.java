@@ -38,9 +38,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         viewModel = ViewModelProviders.of(MainActivity.this).get(RecipeViewModel.class);
-        viewModel.getSelectedRecipe().observe(MainActivity.this, recipe -> {
-            updateWidget(recipe);
-        });
+        viewModel.getSelectedRecipe().observe(MainActivity.this, this::updateWidget);
 
         // Listener passed to Recipe Details fragment
         // to load Step Details fragment when a step is clicked
@@ -53,9 +51,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Listener passed to Recipe List fragment
         // to load Recipe Details fragment when a recipe is clicked
-        OnFragmentItemClickListener recipeListener = () -> {
-            loadRecipeDetailsFragment(stepListener);
-        };
+        OnFragmentItemClickListener recipeListener = () -> loadRecipeDetailsFragment(stepListener);
 
         // Load first fragment only if its not a config change
         if(findViewById(R.id.fragment_container) != null) {
@@ -112,8 +108,6 @@ public class MainActivity extends AppCompatActivity {
      * @param recipeClickListener Listener for recipe item clicked in list of recipes
      */
     private void loadRecipeListFragment(OnFragmentItemClickListener recipeClickListener) {
-        final String fragmentTag = "recipe-list";
-
         RecipeListFragment recipeListFragment = RecipeListFragment.newInstance(recipeClickListener);
         fragment = recipeListFragment;
         getSupportFragmentManager()
@@ -162,7 +156,7 @@ public class MainActivity extends AppCompatActivity {
             StepDetailsFragment stepDetailsFragment = StepDetailsFragment.newInstance();
             fragment = stepDetailsFragment;
             transaction
-                    .replace(R.id.fragment_container, fragment)
+                    .replace(R.id.fragment_container, stepDetailsFragment)
                     .addToBackStack(fragmentTag)
                     .commit();
         } else {

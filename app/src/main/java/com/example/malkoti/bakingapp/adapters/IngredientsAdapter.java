@@ -21,8 +21,8 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         View view = LayoutInflater
                 .from(parent.getContext())
                 .inflate(R.layout.ingredient_item, parent, false);
-        IngredientViewHolder viewHolder = new IngredientViewHolder(view);
-        return viewHolder;
+        //IngredientViewHolder viewHolder = new IngredientViewHolder(view);
+        return new IngredientViewHolder(view);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     /**
      * Change data in the adapter
-     * @param ingredients
+     * @param ingredients List of ingredient objects to populate in RecyclerView
      */
     public void setData(List<Recipe.Ingredient> ingredients) {
         this.ingredients = ingredients;
@@ -48,15 +48,15 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     /**
      * ViewHolder class for ingredient
      */
-    public class IngredientViewHolder extends RecyclerView.ViewHolder {
+    class IngredientViewHolder extends RecyclerView.ViewHolder {
         private TextView ingredientDetails;
 
-        public IngredientViewHolder(View itemView) {
+        IngredientViewHolder(View itemView) {
             super(itemView);
             ingredientDetails = itemView.findViewById(R.id.recipe_ingredient_item);
         }
 
-        public void bindViewHolder(Recipe.Ingredient ingredient) {
+        void bindViewHolder(Recipe.Ingredient ingredient) {
             ingredientDetails.setText(ingredient.toString());
         }
     }
