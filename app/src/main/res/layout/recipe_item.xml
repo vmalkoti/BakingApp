@@ -1,12 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/recipe_name_item"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="@dimen/narrow_margin"
-    android:textAppearance="?attr/textAppearanceListItem"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintTop_toTopOf="parent" />
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/recipe_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:scaleType="centerCrop"
+        android:layout_margin="16dp"
+        android:alpha="0.6"
+        tools:src="@mipmap/baking"/>
+
+    <TextView
+        android:id="@+id/recipe_name_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/narrow_margin"
+        tools:text="@tools:sample/lorem"
+        android:textStyle="bold"
+        android:textSize="@dimen/screen_header_text"
+        android:textColor="@color/colorPrimaryDark"
+        android:textAppearance="?attr/textAppearanceListItem"
+        app:layout_constraintLeft_toLeftOf="@id/recipe_image"
+        app:layout_constraintRight_toRightOf="@id/recipe_image"
+        app:layout_constraintTop_toTopOf="@id/recipe_image"
+        app:layout_constraintBottom_toBottomOf="@id/recipe_image"/>
+
+</android.support.constraint.ConstraintLayout>

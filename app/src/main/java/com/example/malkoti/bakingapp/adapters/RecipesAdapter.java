@@ -5,10 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.malkoti.bakingapp.R;
 import com.example.malkoti.bakingapp.model.Recipe;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -61,15 +63,30 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.RecipeVi
      */
     class RecipeViewHolder extends RecyclerView.ViewHolder {
         private TextView recipeName;
+        private ImageView recipeImage;
 
         RecipeViewHolder(View itemView) {
             super(itemView);
             recipeName = itemView.findViewById(R.id.recipe_name_item);
+            recipeImage = itemView.findViewById(R.id.recipe_image);
         }
 
         void bindViewHolder(Recipe recipe) {
             recipeName.setText(recipe.getName());
             recipeName.setOnClickListener((view) -> listener.onItemClicked(recipe));
+
+            // Picasso can't handle empty string, but it can handle null
+            String recipeImageUrl = recipe.getImage();
+            if(recipeImageUrl.trim().equals("")) {
+                recipeImageUrl = null;
+            }
+
+            Picasso.get()
+                    .load(recipeImageUrl)
+                    .placeholder(R.mipmap.baking)
+                    .error(R.mipmap.baking)
+                    .into(recipeImage);
+            recipeImage.setOnClickListener((view) -> listener.onItemClicked(recipe));
         }
     }
 }
