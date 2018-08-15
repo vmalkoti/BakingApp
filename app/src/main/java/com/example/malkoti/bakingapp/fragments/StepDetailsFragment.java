@@ -53,6 +53,9 @@ import java.util.List;
  */
 public class StepDetailsFragment extends Fragment {
     private static final String LOG_TAG = "DEBUG_" + StepDetailsFragment.class.getSimpleName();
+    private static final String EXO_PLAYBACK_POSITION_KEY = "playbackPosition";
+    private static final String EXO_PLAY_WHEN_READY_KEY = "playWhenReady";
+    private static final String EXO_CURR_WINDOW_KEY = "currentWindow";
 
     private RecipeViewModel recipeViewModel;
 
@@ -82,11 +85,6 @@ public class StepDetailsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState != null) {
-            //Log.d(LOG_TAG, "onCreate : Set player state in onActivityCreated");
-            playbackPosition = savedInstanceState.getLong("playbackPosition", 0);
-            //Log.d(LOG_TAG, "onCreate : Playback position received " + playbackPosition);
-        }
     }
 
     @Override
@@ -118,6 +116,8 @@ public class StepDetailsFragment extends Fragment {
             setVideoPlayerSize(getResources().getConfiguration().orientation);
         }
 
+        Log.d(LOG_TAG, "Saved instance state object is null : " + (savedInstanceState==null));
+
         hideStepNavButtons(getResources().getBoolean(R.bool.twoPaneLayout));
 
         return view;
@@ -127,6 +127,15 @@ public class StepDetailsFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
+        if(savedInstanceState != null) {
+            Log.d(LOG_TAG, "onActivityCreated : restoring state ");
+            //Log.d(LOG_TAG, "onCreate : Set player state in onActivityCreated");
+            playbackPosition = savedInstanceState.getLong(EXO_PLAYBACK_POSITION_KEY, 0);
+            Log.d(LOG_TAG, "Position =" + playbackPosition);
+            currentWindow = savedInstanceState.getInt(EXO_CURR_WINDOW_KEY, 0);
+            playWhenReady = savedInstanceState.getBoolean(EXO_PLAY_WHEN_READY_KEY, false);
+            //Log.d(LOG_TAG, "onCreate : Playback position received " + playbackPosition);
+        }
     }
 
     @Override
@@ -155,10 +164,12 @@ public class StepDetailsFragment extends Fragment {
 
     @Override
     public void onPause() {
+        savePlaybackState();
+
         super.onPause();
         if(Util.SDK_INT <=23) {
             releasePlayer();
-            //Log.d(LOG_TAG, "onPause called");
+            Log.d(LOG_TAG, "onPause called");
         }
     }
 
@@ -167,15 +178,17 @@ public class StepDetailsFragment extends Fragment {
         super.onStop();
         if(Util.SDK_INT > 23) {
             releasePlayer();
-            //Log.d(LOG_TAG, "onStop called");
+            Log.d(LOG_TAG, "onStop called");
         }
     }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putLong("playbackPosition", playbackPosition);
-        //Log.d(LOG_TAG, "onSaveInstanceState : Playback position saved " + playbackPosition);
+        outState.putLong(EXO_PLAYBACK_POSITION_KEY, playbackPosition);
+        outState.putInt(EXO_CURR_WINDOW_KEY, currentWindow);
+        outState.putBoolean(EXO_PLAY_WHEN_READY_KEY, playWhenReady);
+        Log.d(LOG_TAG, "onSaveInstanceState : Playback position saved " + playbackPosition);
     }
 
 
@@ -267,14 +280,17 @@ public class StepDetailsFragment extends Fragment {
      */
     private void releasePlayer() {
         if(player != null) {
-            if(player.getCurrentPosition() > 0) {
-                playbackPosition = player.getCurrentPosition();
-                //Log.d(LOG_TAG, "releasePlayer : Upated current position = " + playbackPosition);
-                currentWindow = player.getCurrentWindowIndex();
-                playWhenReady = player.getPlayWhenReady();
-            }
+            savePlaybackState();
             player.release();
             player = null;
+        }
+    }
+
+    private void savePlaybackState() {
+        if(player.getCurrentPosition() > 0) {
+            playbackPosition = player.getCurrentPosition();
+            currentWindow = player.getCurrentWindowIndex();
+            playWhenReady = player.getPlayWhenReady();
         }
     }
 

@@ -109,6 +109,11 @@ public class MainActivity extends AppCompatActivity
         // save selected recipe and step
         outState.putParcelable(SELECTED_RECIPE_KEY, viewModel.getSelectedRecipe().getValue());
         outState.putParcelable(SELECTED_STEP_KEY, viewModel.getSelectedStep().getValue());
+
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+        if(fragment instanceof StepDetailsFragment) {
+            getSupportFragmentManager().putFragment(outState, "step-details", fragment);
+        }
     }
 
 
