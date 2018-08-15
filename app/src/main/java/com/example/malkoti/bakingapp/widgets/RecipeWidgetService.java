@@ -23,7 +23,7 @@ public class RecipeWidgetService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        Log.d(LOG_TAG, "Service invoked");
+        //Log.d(LOG_TAG, "Service invoked");
         Parcelable p = intent.getParcelableExtra(RecipeWidgetService.RECIPE_EXTRA);
         if(p!=null) {
             Recipe recipe = (Recipe) p;

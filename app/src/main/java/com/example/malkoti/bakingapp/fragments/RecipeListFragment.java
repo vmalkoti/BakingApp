@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,14 +22,20 @@ import com.example.malkoti.bakingapp.data.RecipeViewModel;
  * A fragment representing a list of Items.
  */
 public class RecipeListFragment extends Fragment {
-    private static final String LOG_TAG = RecipeListFragment.class.getSimpleName();
+    private static final String LOG_TAG = "DEBUG_" + RecipeListFragment.class.getSimpleName();
 
-    private static final String ARG_COLUMN_COUNT = "column-count";
-    private int gridColumnCount;
     private RecipesAdapter.OnRecipeItemClickListener adapterItemListener;
 
     private RecipeViewModel recipeViewModel;
-    private OnFragmentItemClickListener fragmentClickListener;
+    //private OnFragmentItemClickListener fragmentClickListener;
+
+    /**
+     * Interface that must be implemented by the activity
+     * to provide click event handler
+     */
+    public interface RecipeListItemClickListener {
+        void onRecipeItemClicked();
+    }
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -37,15 +44,17 @@ public class RecipeListFragment extends Fragment {
     public RecipeListFragment() { }
 
     @SuppressWarnings("unused")
-    public static RecipeListFragment newInstance(OnFragmentItemClickListener listener) {
+    public static RecipeListFragment newInstance() {
         RecipeListFragment fragment = new RecipeListFragment();
-        fragment.fragmentClickListener = listener;
+        //fragment.fragmentClickListener = listener;
         return fragment;
     }
 
+    /*
     public void setClickListener(OnFragmentItemClickListener listener) {
         this.fragmentClickListener = listener;
     }
+    */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +72,7 @@ public class RecipeListFragment extends Fragment {
             RecyclerView.LayoutManager layoutManager;
             //Log.d(LOG_TAG, "Number of columns " + gridColumnCount);
 
-            gridColumnCount = getResources().getInteger(R.integer.gridColumns);
+            int gridColumnCount = getResources().getInteger(R.integer.gridColumns);
             if (gridColumnCount <= 1) {
                 layoutManager = new LinearLayoutManager(context);
             } else {
@@ -84,9 +93,24 @@ public class RecipeListFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         adapterItemListener = (recipe) -> {
-            //Log.d(LOG_TAG, "Clicked on recipe " + recipe.getName());
             recipeViewModel.setSelectedRecipe(recipe);
-            fragmentClickListener.onClick();
+            /*
+            if(fragmentClickListener != null) {
+                Log.d(LOG_TAG, "Used clicklistener object");
+                fragmentClickListener.onClick();
+            } else {
+                FragmentActivity activity = getActivity();
+                if(activity instanceof RecipeListItemClickListener) {
+                    Log.d(LOG_TAG, "Used activity interface");
+                    ((RecipeListItemClickListener) activity).onRecipeItemClicked();
+                }
+            }
+            */
+            FragmentActivity activity = getActivity();
+            if(activity instanceof RecipeListItemClickListener) {
+                //Log.d(LOG_TAG, "Used activity interface");
+                ((RecipeListItemClickListener) activity).onRecipeItemClicked();
+            }
         };
 
     }

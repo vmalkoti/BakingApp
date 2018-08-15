@@ -248,6 +248,15 @@ public class Recipe implements Parcelable {
             return thumbnailURL;
         }
 
+        @Override
+        public boolean equals(Object obj) {
+            if(obj instanceof Step) {
+                Step passedStep = (Step) obj;
+                return (passedStep.getId()==this.getId()
+                        && passedStep.getDescription().equals(this.getDescription()));
+            }
 
+            return false;
+        }
     }
 }

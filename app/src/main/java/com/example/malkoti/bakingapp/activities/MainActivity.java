@@ -26,8 +26,12 @@ import com.example.malkoti.bakingapp.widgets.IngredientsWidget;
 import com.example.malkoti.bakingapp.widgets.RecipeWidgetService;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+        implements RecipeListFragment.RecipeListItemClickListener,
+        RecipeDetailsFragment.RecipeDetailStepClickListener {
     private static final String LOG_TAG = "DEBUG_" + MainActivity.class.getSimpleName();
+    private static final String SELECTED_RECIPE_KEY = "selected-recipe";
+    private static final String SELECTED_STEP_KEY = "selected-step";
 
     private RecipeViewModel viewModel;
     Fragment fragment;
@@ -40,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
         viewModel = ViewModelProviders.of(MainActivity.this).get(RecipeViewModel.class);
         viewModel.getSelectedRecipe().observe(MainActivity.this, this::updateWidget);
 
+        /*
+         * These listener objects are no longer needed
+         *
         // Listener passed to Recipe Details fragment
         // to load Step Details fragment when a step is clicked
         OnFragmentItemClickListener stepListener = () -> {
@@ -51,13 +58,27 @@ public class MainActivity extends AppCompatActivity {
 
         // Listener passed to Recipe List fragment
         // to load Recipe Details fragment when a recipe is clicked
-        OnFragmentItemClickListener recipeListener = () -> loadRecipeDetailsFragment(stepListener);
+        OnFragmentItemClickListener recipeListener = () -> loadRecipeDetailsFragment();
+        */
 
         // Load first fragment only if its not a config change
         if(findViewById(R.id.fragment_container) != null) {
             if(savedInstanceState==null) {
-                loadRecipeListFragment(recipeListener);
+                //loadRecipeListFragment(recipeListener);
+                loadRecipeListFragment();
             } else {
+                // restore selected recipe and step
+                Recipe retrievedRecipe = savedInstanceState.getParcelable(SELECTED_RECIPE_KEY);
+                Recipe.Step retrievedStep = savedInstanceState.getParcelable(SELECTED_STEP_KEY);
+
+                if(retrievedRecipe != null) {
+                    viewModel.setSelectedRecipe(retrievedRecipe);
+                }
+
+                if(retrievedStep != null) {
+                    viewModel.setSelectedStep(retrievedStep);
+                }
+                /*
                 // to handle null listeners after rotation
                 Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                 if(fragment instanceof RecipeListFragment) {
@@ -65,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 } else if(fragment instanceof RecipeDetailsFragment) {
                     ((RecipeDetailsFragment) fragment).setClickListener(stepListener);
                 }
+                */
             }
         }
 
@@ -72,11 +94,49 @@ public class MainActivity extends AppCompatActivity {
         Recipe passedRecipe = getIntent().getParcelableExtra(RecipeWidgetService.RECIPE_EXTRA);
         if (passedRecipe != null) {
             viewModel.setSelectedRecipe(passedRecipe);
-            loadRecipeDetailsFragment(stepListener);
+            if(savedInstanceState==null) {
+                //loadRecipeDetailsFragment(stepListener);
+                loadRecipeDetailsFragment();
+            }
         }
 
     }
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        // save selected recipe and step
+        outState.putParcelable(SELECTED_RECIPE_KEY, viewModel.getSelectedRecipe().getValue());
+        outState.putParcelable(SELECTED_STEP_KEY, viewModel.getSelectedStep().getValue());
+    }
+
+
+    /**
+     * Implemented method - RecipeListFragment.RecipeListItemClickListener
+     */
+    public void onRecipeItemClicked() {
+        /*
+        OnFragmentItemClickListener stepListener = () -> {
+            boolean isTwoPaneLayout = getResources().getBoolean(R.bool.twoPaneLayout);
+            if(!isTwoPaneLayout) {
+                loadStepDetailsFragment();
+            }
+        };
+        loadRecipeDetailsFragment(stepListener);
+        */
+        loadRecipeDetailsFragment();
+    }
+
+    /**
+     * Implemented method - RecipeDetailsFragment.RecipeDetailStepClickListener
+     */
+    public void onRecipeStepClicked() {
+        boolean isTwoPaneLayout = getResources().getBoolean(R.bool.twoPaneLayout);
+        if(!isTwoPaneLayout) {
+            loadStepDetailsFragment();
+        }
+    }
 
     /**
      * Update app widgets with recipe object
@@ -105,10 +165,9 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Load fragment to display list of recipes
-     * @param recipeClickListener Listener for recipe item clicked in list of recipes
      */
-    private void loadRecipeListFragment(OnFragmentItemClickListener recipeClickListener) {
-        RecipeListFragment recipeListFragment = RecipeListFragment.newInstance(recipeClickListener);
+    private void loadRecipeListFragment() {
+        RecipeListFragment recipeListFragment = RecipeListFragment.newInstance();
         fragment = recipeListFragment;
         getSupportFragmentManager()
                 .beginTransaction()
@@ -118,16 +177,15 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Load fragment to display ingredients and steps
-     * @param stepClickListener Listener for step item clicked in recipe details
      */
-    private void loadRecipeDetailsFragment(OnFragmentItemClickListener stepClickListener) {
+    private void loadRecipeDetailsFragment() {
         final String fragmentTag = "recipe-details";
 
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         Fragment existingFragment = getSupportFragmentManager().findFragmentByTag(fragmentTag);
 
         if(existingFragment==null) {
-            RecipeDetailsFragment stepListFragment = RecipeDetailsFragment.newInstance(stepClickListener);
+            RecipeDetailsFragment stepListFragment = RecipeDetailsFragment.newInstance();
             fragment = stepListFragment;
             transaction
                     .replace(R.id.fragment_container, stepListFragment)
@@ -136,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             fragment = existingFragment;
             RecipeDetailsFragment stepListFragment = (RecipeDetailsFragment) existingFragment;
-            stepListFragment.setClickListener(stepClickListener);
+            //stepListFragment.setClickListener(stepClickListener);
             transaction
                     .replace(R.id.fragment_container, stepListFragment)
                     .commit();

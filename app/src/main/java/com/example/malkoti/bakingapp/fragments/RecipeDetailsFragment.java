@@ -5,9 +5,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.LayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,9 +38,13 @@ public class RecipeDetailsFragment extends Fragment {
     private StepsAdapter.OnStepItemClickListener adapterItemListener;
 
     private RecipeViewModel recipeViewModel;
-    private OnFragmentItemClickListener fragmentClickListener;
+    //private OnFragmentItemClickListener fragmentClickListener;
 
     private TextView recipeName;
+
+    public interface RecipeDetailStepClickListener {
+        void onRecipeStepClicked();
+    }
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -46,15 +53,17 @@ public class RecipeDetailsFragment extends Fragment {
     public RecipeDetailsFragment() { }
 
     @SuppressWarnings("unused")
-    public static RecipeDetailsFragment newInstance(OnFragmentItemClickListener listener) {
+    public static RecipeDetailsFragment newInstance() {
         RecipeDetailsFragment fragment = new RecipeDetailsFragment();
-        fragment.fragmentClickListener = listener;
+        //fragment.fragmentClickListener = listener;
         return fragment;
     }
 
+    /*
     public void setClickListener(OnFragmentItemClickListener listener) {
         this.fragmentClickListener = listener;
     }
+    */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,7 +124,23 @@ public class RecipeDetailsFragment extends Fragment {
 
         adapterItemListener = (step) -> {
             recipeViewModel.setSelectedStep(step);
-            fragmentClickListener.onClick();
+            /*
+            if(fragmentClickListener != null) {
+                Log.d(LOG_TAG, "Used clicklistener object");
+                fragmentClickListener.onClick();
+            } else {
+                FragmentActivity activity = getActivity();
+                if(activity instanceof RecipeDetailStepClickListener) {
+                    Log.d(LOG_TAG, "Used activity interface");
+                    ((RecipeDetailStepClickListener) activity).onRecipeStepClicked();
+                }
+            }
+            */
+            FragmentActivity activity = getActivity();
+            if(activity instanceof RecipeDetailStepClickListener) {
+                //Log.d(LOG_TAG, "Used activity interface");
+                ((RecipeDetailStepClickListener) activity).onRecipeStepClicked();
+            }
         };
 
     }

@@ -22,11 +22,18 @@ import com.example.malkoti.bakingapp.data.RecipeViewModel;
 import com.example.malkoti.bakingapp.model.Recipe;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
+import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
@@ -192,11 +199,52 @@ public class StepDetailsFragment extends Fragment {
                 new DefaultLoadControl());
 
             Uri uri = Uri.parse(videoUrl);
+            //LoopingMediaSource mediaSource = new LoopingMediaSource(buildMediaSource(uri));
             player.prepare(buildMediaSource(uri), false, false);
 
             playerView.setPlayer(player);
             player.setPlayWhenReady(playWhenReady);
             player.seekTo(currentWindow, playbackPosition);
+
+            player.addListener(new Player.EventListener() {
+                @Override
+                public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+                    // if playback has ended
+                    if(playbackState == Player.STATE_ENDED) {
+                        // reset back to beginning and don't autoplay
+                        playbackPosition = 0;
+                        player.setPlayWhenReady(false);
+                        player.seekTo(currentWindow, playbackPosition);
+                    }
+                }
+
+                @Override
+                public void onTimelineChanged(Timeline timeline, Object manifest, int reason) { }
+
+                @Override
+                public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) { }
+
+                @Override
+                public void onLoadingChanged(boolean isLoading) { }
+
+                @Override
+                public void onRepeatModeChanged(int repeatMode) { }
+
+                @Override
+                public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) { }
+
+                @Override
+                public void onPlayerError(ExoPlaybackException error) { }
+
+                @Override
+                public void onPositionDiscontinuity(int reason) { }
+
+                @Override
+                public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) { }
+
+                @Override
+                public void onSeekProcessed() { }
+            });
             //Log.d(LOG_TAG, "initializePlayer : Playback position set " + playbackPosition);
 
         }
@@ -323,6 +371,7 @@ public class StepDetailsFragment extends Fragment {
         List<Recipe.Step> steps = recipeViewModel.getSelectedRecipe().getValue().getSteps();
         Recipe.Step currentStep = recipeViewModel.getSelectedStep().getValue();
         int index = steps.indexOf(currentStep);
+        //Log.d(LOG_TAG, "Current step=" + index + "; total=" + steps.size());
         recipeViewModel.setSelectedStep(steps.get(index-1));
     }
 
@@ -334,6 +383,7 @@ public class StepDetailsFragment extends Fragment {
         List<Recipe.Step> steps = recipeViewModel.getSelectedRecipe().getValue().getSteps();
         Recipe.Step currentStep = recipeViewModel.getSelectedStep().getValue();
         int index = steps.indexOf(currentStep);
+        //Log.d(LOG_TAG, "Current step index=" + index + "; total=" + steps.size());
         return (index == steps.size()-1);
     }
 
