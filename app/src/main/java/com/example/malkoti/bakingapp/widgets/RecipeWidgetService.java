@@ -3,14 +3,11 @@ package com.example.malkoti.bakingapp.widgets;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.IBinder;
 import android.os.Parcelable;
-import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
 
-import com.example.malkoti.bakingapp.R;
 import com.example.malkoti.bakingapp.model.Recipe;
 import com.example.malkoti.bakingapp.utils.PreferencesUtil;
 
@@ -23,15 +20,10 @@ public class RecipeWidgetService extends RemoteViewsService {
 
     @Override
     public RemoteViewsFactory onGetViewFactory(Intent intent) {
-        //Log.d(LOG_TAG, "Service invoked");
         Parcelable p = intent.getParcelableExtra(RecipeWidgetService.RECIPE_EXTRA);
         if(p!=null) {
             Recipe recipe = (Recipe) p;
-            //Log.d(LOG_TAG, "recipe object in onGetViewFactory = " + recipe.getName());
         }
-        //else {
-            //Log.d(LOG_TAG, "no recipe object in onGetViewFactory");
-        //}
         return new IngredientsWidgetRemoteViewsFactory(this.getApplicationContext(), intent);
     }
 
@@ -47,13 +39,6 @@ public class RecipeWidgetService extends RemoteViewsService {
         IngredientsWidgetRemoteViewsFactory(Context applicationContext, Intent intent) {
             this.context = applicationContext;
             this.recipe = intent.getParcelableExtra(RecipeWidgetService.RECIPE_EXTRA);
-            /*
-            if(this.recipe!=null) {
-                Log.d(LOG_TAG, "recipe object received in factory constructor =" + recipe.getName());
-            } else {
-                Log.d(LOG_TAG, "no recipe object received in factory constructor");
-            }
-            */
         }
 
         @Override
@@ -65,7 +50,6 @@ public class RecipeWidgetService extends RemoteViewsService {
         @Override
         public void onDataSetChanged() {
             final long identityToken = Binder.clearCallingIdentity();
-            //Log.d(LOG_TAG, "Factory dataset changed");
             // get/set new data here
             this.recipe = PreferencesUtil.getPreferences(context);
             Binder.restoreCallingIdentity(identityToken);
@@ -78,8 +62,6 @@ public class RecipeWidgetService extends RemoteViewsService {
 
         @Override
         public int getCount() {
-            //int count = recipe==null? 0: recipe.getIngredients().size();
-            //Log.d(LOG_TAG, "in getCount = " + count);
             return (recipe==null? 0: recipe.getIngredients().size());
         }
 

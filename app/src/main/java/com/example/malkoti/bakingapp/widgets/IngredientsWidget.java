@@ -5,9 +5,7 @@ import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Parcelable;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.example.malkoti.bakingapp.R;
@@ -25,22 +23,16 @@ public class IngredientsWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-        // There may be multiple widgets active, so update all of them
         for (int appWidgetId : appWidgetIds) {
             RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.ingredients_widget);
 
             Recipe savedRecipe = PreferencesUtil.getPreferences(context);
             if(savedRecipe!=null) {
-                //Log.d(LOG_TAG, "recipe object in onUpdate = " + savedRecipe.getName());
                 views.setTextViewText(R.id.appwidget_recipe_name, savedRecipe.getName());
             }
-            //else {
-                //Log.d(LOG_TAG, "no recipe object in onUpdate");
-            //}
 
             Intent serviceIntent = new Intent(context, RecipeWidgetService.class);
             serviceIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
-            //serviceIntent.putExtra(RecipeWidgetService.RECIPE_EXTRA, recipe);
             views.setRemoteAdapter(R.id.appwidget_recipe_ingredients_list, serviceIntent);
 
             Intent clickIntent = new Intent(context, MainActivity.class);
@@ -62,7 +54,6 @@ public class IngredientsWidget extends AppWidgetProvider {
         Parcelable p = intent.getParcelableExtra(RecipeWidgetService.RECIPE_EXTRA);
         if(p!=null) {
             this.recipe = (Recipe) p;
-            //Log.d(LOG_TAG, "recipe object in onReceive = " + recipe.getName());
         }
         super.onReceive(context, intent);
     }

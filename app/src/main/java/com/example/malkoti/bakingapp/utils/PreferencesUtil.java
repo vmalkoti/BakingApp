@@ -23,7 +23,6 @@ public class PreferencesUtil {
         Gson gson = new Gson();
         SharedPreferences preferences = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         String json = preferences.getString(PREF_KEY, "");
-        //Recipe recipe = gson.fromJson(json, Recipe.class);
         return gson.fromJson(json, Recipe.class);
     }
 }

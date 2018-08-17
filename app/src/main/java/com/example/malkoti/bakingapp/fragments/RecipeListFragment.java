@@ -8,7 +8,6 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +26,6 @@ public class RecipeListFragment extends Fragment {
     private RecipesAdapter.OnRecipeItemClickListener adapterItemListener;
 
     private RecipeViewModel recipeViewModel;
-    //private OnFragmentItemClickListener fragmentClickListener;
 
     /**
      * Interface that must be implemented by the activity
@@ -46,15 +44,9 @@ public class RecipeListFragment extends Fragment {
     @SuppressWarnings("unused")
     public static RecipeListFragment newInstance() {
         RecipeListFragment fragment = new RecipeListFragment();
-        //fragment.fragmentClickListener = listener;
         return fragment;
     }
 
-    /*
-    public void setClickListener(OnFragmentItemClickListener listener) {
-        this.fragmentClickListener = listener;
-    }
-    */
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,7 +62,6 @@ public class RecipeListFragment extends Fragment {
             Context context = view.getContext();
             RecyclerView recyclerView = (RecyclerView) view;
             RecyclerView.LayoutManager layoutManager;
-            //Log.d(LOG_TAG, "Number of columns " + gridColumnCount);
 
             int gridColumnCount = getResources().getInteger(R.integer.gridColumns);
             if (gridColumnCount <= 1) {
@@ -94,21 +85,8 @@ public class RecipeListFragment extends Fragment {
         super.onAttach(context);
         adapterItemListener = (recipe) -> {
             recipeViewModel.setSelectedRecipe(recipe);
-            /*
-            if(fragmentClickListener != null) {
-                Log.d(LOG_TAG, "Used clicklistener object");
-                fragmentClickListener.onClick();
-            } else {
-                FragmentActivity activity = getActivity();
-                if(activity instanceof RecipeListItemClickListener) {
-                    Log.d(LOG_TAG, "Used activity interface");
-                    ((RecipeListItemClickListener) activity).onRecipeItemClicked();
-                }
-            }
-            */
             FragmentActivity activity = getActivity();
             if(activity instanceof RecipeListItemClickListener) {
-                //Log.d(LOG_TAG, "Used activity interface");
                 ((RecipeListItemClickListener) activity).onRecipeItemClicked();
             }
         };

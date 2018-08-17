@@ -29,7 +29,6 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
-import com.google.android.exoplayer2.source.LoopingMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
@@ -129,12 +128,10 @@ public class StepDetailsFragment extends Fragment {
         setRetainInstance(true);
         if(savedInstanceState != null) {
             Log.d(LOG_TAG, "onActivityCreated : restoring state ");
-            //Log.d(LOG_TAG, "onCreate : Set player state in onActivityCreated");
             playbackPosition = savedInstanceState.getLong(EXO_PLAYBACK_POSITION_KEY, 0);
             Log.d(LOG_TAG, "Position =" + playbackPosition);
             currentWindow = savedInstanceState.getInt(EXO_CURR_WINDOW_KEY, 0);
             playWhenReady = savedInstanceState.getBoolean(EXO_PLAY_WHEN_READY_KEY, false);
-            //Log.d(LOG_TAG, "onCreate : Playback position received " + playbackPosition);
         }
     }
 
@@ -149,7 +146,6 @@ public class StepDetailsFragment extends Fragment {
         super.onStart();
         if(Util.SDK_INT > 23) {
             initializePlayer();
-            //Log.d(LOG_TAG, "onStart called");
         }
     }
 
@@ -158,7 +154,6 @@ public class StepDetailsFragment extends Fragment {
         super.onResume();
         if(Util.SDK_INT <= 23 || player == null) {
             initializePlayer();
-            //Log.d(LOG_TAG, "onResume called");
         }
     }
 
@@ -169,7 +164,6 @@ public class StepDetailsFragment extends Fragment {
         super.onPause();
         if(Util.SDK_INT <=23) {
             releasePlayer();
-            Log.d(LOG_TAG, "onPause called");
         }
     }
 
@@ -178,7 +172,6 @@ public class StepDetailsFragment extends Fragment {
         super.onStop();
         if(Util.SDK_INT > 23) {
             releasePlayer();
-            Log.d(LOG_TAG, "onStop called");
         }
     }
 
@@ -188,7 +181,6 @@ public class StepDetailsFragment extends Fragment {
         outState.putLong(EXO_PLAYBACK_POSITION_KEY, playbackPosition);
         outState.putInt(EXO_CURR_WINDOW_KEY, currentWindow);
         outState.putBoolean(EXO_PLAY_WHEN_READY_KEY, playWhenReady);
-        Log.d(LOG_TAG, "onSaveInstanceState : Playback position saved " + playbackPosition);
     }
 
 
@@ -203,8 +195,6 @@ public class StepDetailsFragment extends Fragment {
         if(selectedStep==null) return;
 
         String videoUrl = recipeViewModel.getSelectedStep().getValue().getVideoURL();
-
-        //Log.d(LOG_TAG, "initializePlayer : Get PlayerView instance and options ");
         if(videoUrl != null && !videoUrl.trim().isEmpty()) {
             player = ExoPlayerFactory.newSimpleInstance(
                 new DefaultRenderersFactory(getContext()),
@@ -258,7 +248,6 @@ public class StepDetailsFragment extends Fragment {
                 @Override
                 public void onSeekProcessed() { }
             });
-            //Log.d(LOG_TAG, "initializePlayer : Playback position set " + playbackPosition);
 
         }
     }
@@ -286,6 +275,9 @@ public class StepDetailsFragment extends Fragment {
         }
     }
 
+    /**
+     * Save playback state in variables
+     */
     private void savePlaybackState() {
         if(player.getCurrentPosition() > 0) {
             playbackPosition = player.getCurrentPosition();
@@ -330,7 +322,6 @@ public class StepDetailsFragment extends Fragment {
         float density = getResources().getDisplayMetrics().density;
         int leftMargin, rightMargin, topMargin, bottomMargin = 0;
 
-        //Log.d(LOG_TAG, "Changing player view size");
         switch (screenOrientation) {
             case Configuration.ORIENTATION_LANDSCAPE:
                 String url = recipeViewModel.getSelectedStep().getValue().getVideoURL();
@@ -387,7 +378,6 @@ public class StepDetailsFragment extends Fragment {
         List<Recipe.Step> steps = recipeViewModel.getSelectedRecipe().getValue().getSteps();
         Recipe.Step currentStep = recipeViewModel.getSelectedStep().getValue();
         int index = steps.indexOf(currentStep);
-        //Log.d(LOG_TAG, "Current step=" + index + "; total=" + steps.size());
         recipeViewModel.setSelectedStep(steps.get(index-1));
     }
 
@@ -399,7 +389,6 @@ public class StepDetailsFragment extends Fragment {
         List<Recipe.Step> steps = recipeViewModel.getSelectedRecipe().getValue().getSteps();
         Recipe.Step currentStep = recipeViewModel.getSelectedStep().getValue();
         int index = steps.indexOf(currentStep);
-        //Log.d(LOG_TAG, "Current step index=" + index + "; total=" + steps.size());
         return (index == steps.size()-1);
     }
 
