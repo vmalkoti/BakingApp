@@ -15,7 +15,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:scaleType="centerCrop"
-        android:layout_margin="16dp"
+        android:layout_margin="@dimen/wide_margin"
         android:alpha="0.6"
         tools:src="@mipmap/baking"/>
 
